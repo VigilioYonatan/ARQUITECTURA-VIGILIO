@@ -1,0 +1,28 @@
+---
+title: "Probando Islas con MDX"
+description: "Cómo mezclar Markdown con componentes interactivos de Preact."
+pubDate: 2025-12-05
+author: "Antigravity"
+tags:
+    - astro
+    - mdx
+    - preact
+---
+
+import Counter from "../../components/Counter.jsx";
+
+# La Magia de las Islas 🏝️
+
+Hasta ahora, todo era estático. Pero mira esto:
+
+<div style={{ margin: "2rem 0" }}>
+    <Counter client:visible />
+</div>
+
+## ¿Qué acaba de pasar?
+
+1.  Escribimos este post en **MDX** (`.mdx`).
+2.  Importamos el componente `Counter` de Preact.
+3.  Lo usamos con la directiva `client:visible`.
+
+Esto significa que el JavaScript del contador **solo se carga cuando el usuario hace scroll hasta verlo**. ¡Rendimiento puro!

@@ -1,0 +1,23 @@
+---
+import Welcome from "@components/pages/Welcome.astro";
+import Layout from "@components/pages/Layout.astro";
+import HelloWorld from "@components/hello-world";
+import {PUBLIC_APP_NAME} from 'astro:env/client';
+// const response = await fetch("/api/users");
+// const result = await response.json();
+// console.log(result);
+// const empresaStore = useEmpresaStore(Astro.locals);
+// console.log({empresaStore});
+const empresa =Astro.locals.props;
+console.log(`${PUBLIC_APP_NAME}a`);
+
+console.log(Astro.locals);
+
+---
+
+<Layout>
+    <HelloWorld  />
+    <h1 class="text-3xl font-bold underline">s</h1>
+    <Welcome />
+    {PUBLIC_APP_NAME}
+</Layout>

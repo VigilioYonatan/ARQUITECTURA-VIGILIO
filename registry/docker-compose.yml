@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  registry:
+    image: registry:2
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.registry.rule=Host(`registry.tudominio.com`)"
+        - "traefik.http.routers.registry.entrypoints=websecure"
+        - "traefik.http.routers.registry.tls.certresolver=letsencrypt"
+        - "traefik.http.services.registry.loadbalancer.server.port=5000"
+    environment:
+      # Configuración General
+      REGISTRY_HTTP_ADDR: 0.0.0.0:5000
+      REGISTRY_HTTP_SECRET: ${REGISTRY_HTTP_SECRET}
+
+      # Autenticación (htpasswd)
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+      REGISTRY_AUTH_HTPASSWD_PATH: /run/secrets/registry_auth
+
+      # Almacenamiento en MinIO (S3)
+      REGISTRY_STORAGE: s3
+      REGISTRY_STORAGE_S3_REGION: us-east-1
+      REGISTRY_STORAGE_S3_BUCKET: docker-registry
+      REGISTRY_STORAGE_S3_ACCESSKEY: ${MINIO_ACCESS_KEY}
+      REGISTRY_STORAGE_S3_SECRETKEY: ${MINIO_SECRET_KEY}
+      REGISTRY_STORAGE_S3_REGIONENDPOINT: http://minio:9000
+      REGISTRY_STORAGE_S3_ENCRYPT: "false"
+      REGISTRY_STORAGE_S3_SECURE: "false"
+      REGISTRY_STORAGE_S3_V4AUTH: "true"
+      REGISTRY_STORAGE_S3_CHUNKSIZE: 5242880
+      REGISTRY_STORAGE_DELETE_ENABLED: "true" # Permitir borrar imágenes
+
+    secrets:
+      - registry_auth
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true
+
+secrets:
+  registry_auth:
+    file: ./auth/htpasswd

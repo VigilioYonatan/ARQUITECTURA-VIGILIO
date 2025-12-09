@@ -1,0 +1,163 @@
+version: "3.8"
+
+# Plantilla común para servicios Citus
+x-citus-common: &citus-common
+  image: citusdata/citus:12.1
+  networks:
+    - citus-net
+    - dokploy-network
+  environment: &citus-env
+    POSTGRES_USER: ${POSTGRES_USER:-postgres}
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    POSTGRES_DB: ${POSTGRES_DB:-postgres}
+    PGDATA: /var/lib/postgresql/data/pgdata
+  deploy:
+    replicas: 1
+    restart_policy:
+      condition: on-failure
+
+services:
+  # 👑 Citus Coordinator (Master)
+  # Este nodo recibe todas las consultas y las distribuye.
+  citus-master:
+    <<: *citus-common
+    hostname: citus-master
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      <<: *citus-env
+      CITUS_HOST: citus-master
+    volumes:
+      - citus_master_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    deploy:
+      placement:
+        constraints:
+          - node.labels.citus-node == 1
+      resources:
+        limits:
+          cpus: "2"
+          memory: 4G
+        reservations:
+          cpus: "0.5"
+          memory: 1G
+
+  # 👷 Worker 1
+  citus-worker1:
+    <<: *citus-common
+    hostname: citus-worker1
+    volumes:
+      - citus_worker1_data:/var/lib/postgresql/data
+    deploy:
+      placement:
+        constraints:
+          - node.labels.citus-node == 2
+      resources:
+        limits:
+          cpus: "2"
+          memory: 4G
+        reservations:
+          cpus: "0.5"
+          memory: 1G
+
+  # 👷 Worker 2
+  citus-worker2:
+    <<: *citus-common
+    hostname: citus-worker2
+    volumes:
+      - citus_worker2_data:/var/lib/postgresql/data
+    deploy:
+      placement:
+        constraints:
+          - node.labels.citus-node == 3
+      resources:
+        limits:
+          cpus: "2"
+          memory: 4G
+        reservations:
+          cpus: "0.5"
+          memory: 1G
+
+  # 🤖 Manager (Auto-join)
+  # Script que conecta los workers al master automáticamente al iniciar
+  citus-manager:
+    image: citusdata/citus:12.1
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+      placement:
+        constraints:
+          - node.role == manager
+    networks:
+      - citus-net
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+    command: >
+      bash -c "
+      echo '⏳ Esperando a citus-master...' &&
+      until psql -h citus-master -U postgres -c '\q'; do sleep 5; done &&
+      echo '✅ Master listo. Conectando workers...' &&
+      psql -h citus-master -U postgres -c \"SELECT * from citus_add_node('citus-worker1', 5432);\" &&
+      psql -h citus-master -U postgres -c \"SELECT * from citus_add_node('citus-worker2', 5432);\" &&
+      echo '🎉 Cluster configurado correctamente.'
+      "
+
+  # 💾 Backup Service (Automático)
+  citus-backup:
+    build: ./backup
+    image: citus-backup:latest
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    networks:
+      - citus-net
+      - dokploy-network
+    environment:
+      POSTGRES_HOST: citus-master
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # MinIO Config
+      MINIO_ENDPOINT: http://minio:9000 # Nombre del servicio MinIO en la red dokploy-network
+      MINIO_BUCKET: backups
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-admin}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-password}
+      AWS_DEFAULT_REGION: us-east-1
+
+  # 📊 CloudBeaver (Opcional - GUI Web)
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    ports:
+      - "${CLOUDBEAVER_PORT:-8978}:8978"
+    volumes:
+      - cloudbeaver_data:/opt/cloudbeaver/workspace
+    networks:
+      - citus-net
+      - dokploy-network
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+
+volumes:
+  citus_master_data:
+  citus_worker1_data:
+  citus_worker2_data:
+  cloudbeaver_data:
+
+networks:
+  citus-net:
+    driver: overlay
+    attachable: true
+  dokploy-network:
+    external: true

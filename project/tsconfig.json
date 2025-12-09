@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx",
+        "baseUrl": ".",
+        "allowJs": true,
+        "isolatedModules": true,
+        "jsxImportSource": "preact",
+        "strictPropertyInitialization": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "removeComments": true,
+        "allowImportingTsExtensions": true,
+        // "verbatimModuleSyntax": true, //
+        "noEmit": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "esModuleInterop": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitAny": true,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "noEmitOnError": true,
+        "paths": {
+            "@/*": ["src/services/*"],
+            "~/*": ["src/*"],
+            "react": ["node_modules/preact/compat/"],
+            "react-dom": ["node_modules/preact/compat/"]
+        }
+    },
+    "include": ["src", "src/vite-env.d.ts"]
+}

@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  runner:
+    image: myoung34/github-runner:latest
+    environment:
+      # Configuración Obligatoria
+      REPO_URL: https://github.com/tu-usuario/tu-repo
+      ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
+
+      # Etiquetas para identificar este runner en tu workflow
+      RUNNER_NAME: swarm-runner
+      LABELS: swarm,production,docker
+
+      # Mantener el runner vivo después de terminar un trabajo
+      EPHEMERAL: "false"
+
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          # Protegemos el cluster limitando el consumo
+          cpus: "2"
+          memory: 2G
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+
+    # Necesario para que el runner pueda ejecutar comandos de Docker (construir imágenes)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true

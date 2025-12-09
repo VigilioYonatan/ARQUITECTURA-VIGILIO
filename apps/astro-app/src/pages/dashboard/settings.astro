@@ -1,0 +1,32 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+// Verificación de sesión (MPA style)
+// Nota: El middleware ya protege /dashboard, así que esto es redundante pero ilustrativo
+const user = Astro.locals.user;
+---
+
+<Layout title="Dashboard Settings">
+    <main class="max-w-3xl mx-auto p-8 text-white">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-green-400">⚙️ Dashboard Settings (MPA)</h1>
+            <a href="/dashboard" class="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600">⬅ Volver</a>
+        </div>
+
+        <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+            <p class="mb-4 text-gray-300">
+                Esta es una página <strong>.astro</strong> separada.
+                <br>
+                Cuando navegaste aquí, el navegador hizo una petición completa al servidor.
+            </p>
+
+            <form class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-2">Cambiar Nombre</label>
+                    <input type="text" value={user?.name} class="w-full p-2 rounded bg-gray-900 border border-gray-600" />
+                </div>
+                <button type="button" class="bg-green-600 px-4 py-2 rounded font-bold">Guardar (Simulado)</button>
+            </form>
+        </div>
+    </main>
+</Layout>

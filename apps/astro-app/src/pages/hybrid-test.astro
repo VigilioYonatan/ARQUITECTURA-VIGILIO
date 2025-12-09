@@ -1,0 +1,84 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+// 🛑 ESTO ES LA CLAVE DEL MODO HÍBRIDO
+// Al poner esto en 'true', esta página se vuelve ESTÁTICA (SSG)
+// aunque el resto de tu sitio sea SSR.
+export const prerender = true;
+
+const buildTime = new Date().toLocaleTimeString();
+---
+
+<Layout>
+    <main>
+        <a href="/" class="back-link">⬅ Volver</a>
+        
+        <h1>Página Estática (Híbrida) 🧊</h1>
+        
+        <div class="card">
+            <p>
+                Esta página tiene <code>export const prerender = true;</code>.
+                <br>
+                Esto significa que se generó <strong>una sola vez</strong> cuando iniciaste el servidor.
+            </p>
+            
+            <div class="stat">
+                <span class="label">Hora de Construcción:</span>
+                <span class="value">{buildTime}</span>
+            </div>
+            
+            <p class="note">
+                Prueba a recargar. ¡La hora NO cambiará! 
+                <br>
+                (A diferencia de la página SSR que cambia cada vez).
+            </p>
+        </div>
+    </main>
+</Layout>
+
+<style>
+    main {
+        margin: auto;
+        padding: 1rem;
+        width: 800px;
+        max-width: calc(100% - 2rem);
+        color: white;
+        text-align: center;
+    }
+    .back-link {
+        display: block;
+        text-align: left;
+        color: #ccc;
+        margin-bottom: 2rem;
+    }
+    .card {
+        background: #1a1d23;
+        padding: 2rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+        border: 1px solid #4f39fa;
+    }
+    .stat {
+        margin: 1.5rem 0;
+        font-size: 1.5rem;
+    }
+    .label {
+        color: #aaa;
+        display: block;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    .value {
+        color: #00ffaa; /* Verde para indicar estático/rápido */
+        font-weight: bold;
+        font-size: 2.5rem;
+    }
+    .note {
+        font-size: 0.9rem;
+        color: #ccc;
+        font-style: italic;
+    }
+    a {
+        color: #4f39fa;
+    }
+</style>

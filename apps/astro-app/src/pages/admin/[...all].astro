@@ -1,0 +1,31 @@
+---
+import AdminApp from "../../components/admin/AdminApp.jsx";
+import Layout from "../../layouts/Layout.astro";
+
+// Simulamos obtener el usuario (en realidad vendría del middleware/cookies)
+const user = Astro.locals.user || { name: "Admin User", role: "admin" };
+---
+
+<!-- 
+    IMPORTANTE: No usamos el Layout normal porque queremos control total del CSS
+    para que parezca una App (full height, sin footer global, etc).
+    O podemos usar un Layout vacío.
+-->
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Admin SPA</title>
+        <style>
+            body { margin: 0; font-family: system-ui, sans-serif; background: #111; color: white; }
+        </style>
+	</head>
+	<body>
+        <!-- 
+            client:only="preact" es la clave.
+            Astro no renderiza nada en el servidor.
+            El navegador toma el control total.
+        -->
+		<AdminApp client:only="preact" user={user} />
+	</body>
+</html>

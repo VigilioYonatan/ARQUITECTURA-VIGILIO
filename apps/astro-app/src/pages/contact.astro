@@ -1,0 +1,78 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+	<main>
+		<h1>Contáctanos 📬</h1>
+		<p>
+			Esta es otra página estática. Gracias al <code>ClientRouter</code>, 
+			la navegación hacia aquí fue instantánea.
+		</p>
+		
+		<form>
+			<label>
+				Nombre:
+				<input type="text" name="name" />
+			</label>
+			<label>
+				Email:
+				<input type="email" name="email" />
+			</label>
+			<button type="submit">Enviar</button>
+		</form>
+
+		<a href="/" class="back-link">⬅ Volver al inicio</a>
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		padding: 1rem;
+		width: 800px;
+		max-width: calc(100% - 2rem);
+		color: white;
+	}
+	h1 {
+		font-size: 3rem;
+		font-weight: 700;
+		margin-bottom: 1rem;
+	}
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		max-width: 400px;
+		margin-bottom: 2rem;
+		background: #23262d;
+		padding: 2rem;
+		border-radius: 8px;
+	}
+	label {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	input {
+		padding: 0.5rem;
+		border-radius: 4px;
+		border: 1px solid #ccc;
+	}
+	button {
+		padding: 0.5rem 1rem;
+		background: #4f39fa;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+	button:hover {
+		background: #3d2bf0;
+	}
+	.back-link {
+		color: white;
+		text-decoration: none;
+		border-bottom: 1px solid white;
+	}
+</style>

@@ -1,0 +1,17 @@
+---
+import "@assets/css/global.css";
+import DashboardRouter from "./_routers";
+import HelloWorld from "@components/hello-world";
+---
+
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Admin SPA</title>
+	</head>
+	<body>
+        <HelloWorld client:only="preact"/>
+        <DashboardRouter client:only="preact" />
+	</body>
+</html>

@@ -1,0 +1,41 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+if (Astro.request.method === "POST") {
+    // Simular login exitoso
+    Astro.cookies.set("auth", "true", { path: "/" });
+    return Astro.redirect("/dashboard");
+}
+---
+
+<Layout>
+    <main>
+        <h1>Iniciar Sesión 🔐</h1>
+        <form method="POST">
+            <button type="submit">Entrar como Admin</button>
+        </form>
+    </main>
+</Layout>
+
+<style>
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 50vh;
+        color: white;
+    }
+    button {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+        background: #4f39fa;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    button:hover {
+        background: #3d2beb;
+    }
+</style>

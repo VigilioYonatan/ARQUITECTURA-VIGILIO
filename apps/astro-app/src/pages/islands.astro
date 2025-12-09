@@ -1,0 +1,96 @@
+---
+import HydrationDemo from "../components/HydrationDemo.jsx";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+    <main class="max-w-3xl mx-auto p-4 text-white">
+        <h1 class="text-4xl font-bold text-center mb-8 text-purple-400">🏝️ Astro Islands Demo</h1>
+        <p class="text-center mb-12 text-gray-400">
+            Observa cómo y cuándo se activan los componentes.
+            <br>
+            Abre la consola del navegador (F12) para ver los logs.
+        </p>
+
+        <div class="space-y-12">
+            
+            <!-- 1. client:load -->
+            <section>
+                <div class="mb-4">
+                    <code class="text-green-400 text-xl">client:load</code>
+                    <p class="text-sm text-gray-400">Carga inmediatamente. Prioridad Alta.</p>
+                </div>
+                <HydrationDemo 
+                    client:load 
+                    strategy="client:load" 
+                    message="Soy crítico. Me cargo apenas abres la página." 
+                />
+            </section>
+
+            <!-- 2. client:idle -->
+            <section>
+                <div class="mb-4">
+                    <code class="text-yellow-400 text-xl">client:idle</code>
+                    <p class="text-sm text-gray-400">Carga cuando el navegador descansa.</p>
+                </div>
+                <HydrationDemo 
+                    client:idle 
+                    strategy="client:idle" 
+                    message="No tengo prisa. Espero a que termines de cargar lo importante." 
+                />
+            </section>
+
+            <!-- Espacio para forzar scroll -->
+            <div class="py-32 text-center border-y border-gray-800 my-12 bg-gray-900/50">
+                <p class="text-2xl text-gray-500">⬇️ Haz Scroll hacia abajo ⬇️</p>
+                <p class="text-sm text-gray-600 mt-2">Para ver client:visible en acción</p>
+            </div>
+            <div class="h-96"></div>
+
+            <!-- 3. client:visible -->
+            <section>
+                <div class="mb-4">
+                    <code class="text-blue-400 text-xl">client:visible</code>
+                    <p class="text-sm text-gray-400">Carga solo cuando entro en pantalla.</p>
+                </div>
+                <HydrationDemo 
+                    client:visible 
+                    strategy="client:visible" 
+                    message="¡Hola! No existía (en JS) hasta que me viste." 
+                />
+            </section>
+
+            <div class="h-32"></div>
+
+            <!-- 4. client:media -->
+            <section>
+                <div class="mb-4">
+                    <code class="text-pink-400 text-xl">client:media="(max-width: 768px)"</code>
+                    <p class="text-sm text-gray-400">Prueba redimensionar la ventana a tamaño móvil.</p>
+                </div>
+                <HydrationDemo 
+                    client:media="(max-width: 768px)" 
+                    strategy="client:media" 
+                    message="Solo funciono en móviles. En desktop soy solo HTML estático." 
+                />
+            </section>
+
+            <!-- 5. client:media -->
+            <section>
+                <div class="mb-4">
+                    <code class="text-pink-400 text-xl">client:only="preact"</code>
+                    <p class="text-sm text-gray-400">Prueba redimensionar la ventana a tamaño móvil.</p>
+                </div>
+                <HydrationDemo 
+                    client:only="preact" 
+                    strategy="client:only='preact'" 
+                    message="Solo se renderiza en el navegador. No existe en el HTML estático." 
+                />
+            </section>
+        </div>
+        
+        <div class="mt-20 text-center">
+            <a href="/" class="text-purple-400 hover:text-purple-300 underline">⬅ Volver al Inicio</a>
+        </div>
+    </main>
+</Layout>

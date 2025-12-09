@@ -1,0 +1,47 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+	<main>
+		<h1>Sobre nosotros 🚀</h1>
+		<p>¡Esta es tu primera página creada con Astro!</p>
+		<p>
+			Astro usa <strong>enrutamiento basado en archivos</strong>. 
+			Al crear <code>about.astro</code> en la carpeta <code>pages</code>, 
+			automáticamente tienes acceso a la ruta <code>/about</code>.
+		</p>
+		<a href="/" class="btn">Volver al inicio</a>
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		padding: 1rem;
+		width: 800px;
+		max-width: calc(100% - 2rem);
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+	}
+	h1 {
+		font-size: 3rem;
+		font-weight: 700;
+		line-height: 1;
+		text-align: center;
+		margin-bottom: 1em;
+	}
+	.btn {
+		display: inline-block;
+		background: #4f39fa;
+		color: white;
+		padding: 0.5rem 1rem;
+		border-radius: 0.5rem;
+		text-decoration: none;
+		margin-top: 2rem;
+	}
+	.btn:hover {
+		background: #3d2bf0;
+	}
+</style>

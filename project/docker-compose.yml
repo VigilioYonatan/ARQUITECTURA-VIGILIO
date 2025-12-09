@@ -1,0 +1,64 @@
+services:
+    postgres_db:
+        image: postgres:17.6-alpine3.21
+        restart: always
+        container_name: ${VITE_NAME_APP}_db
+        environment:
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASS}
+            POSTGRES_DB: ${DB_NAME}
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        ports:
+            - "${DB_PORT}:5432"
+        networks:
+            - dokploy-network
+    app:
+        container_name: ${VITE_NAME_APP}
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: development
+        ports:
+            - "${PORT}:${PORT}"
+        environment:
+            - VITE_EMPRESA=${VITE_EMPRESA}
+            - VITE_NAME_APP=${VITE_NAME_APP}
+            - NODE_ENV=${NODE_ENV}
+            - VITE_ENV=${VITE_ENV}
+            - PORT=${PORT}
+            - DB_HOST=${DB_HOST}
+            - DB_PORT=${DB_PORT}
+            - DB_NAME=${DB_NAME}
+            - DB_PASS=${DB_PASS}
+            - DB_USER=${DB_USER}
+            - MAIL_HOST=${MAIL_HOST}
+            - MAIL_PORT=${MAIL_PORT}
+            - JWT_KEY=${JWT_KEY}
+            - VITE_URL=${VITE_URL}
+            - VITE_PORT=${VITE_PORT}
+            - VITE_HMAC_KEY=${VITE_HMAC_KEY}
+            - VITE_PLUBIC_VAPID_EMAIL=${VITE_PLUBIC_VAPID_EMAIL}
+            - VITE_PLUBIC_VAPID_KEY=${VITE_PLUBIC_VAPID_KEY}
+            - VITE_PRIVATE_VAPID_KEY=${VITE_PRIVATE_VAPID_KEY}
+            - VITE_IGV=${VITE_IGV}
+            - BASE_URL_FACTURACION=${BASE_URL_FACTURACION}
+            - CHOKIDAR_USEPOLLING=true
+            - CHOKIDAR_INTERVAL=250
+        depends_on:
+            - postgres_db
+        restart: always
+        volumes:
+            - ./:/usr/src/app
+            - ./public:/usr/src/app/public
+            - ./src/assets/temp:/usr/src/app/src/assets/temp
+            - /usr/src/app/node_modules
+            - /usr/src/app/public/cear_latinoamericano/files/file
+        networks:
+            - dokploy-network
+
+volumes:
+    postgres_data:
+networks:
+    dokploy-network:
+        external: true

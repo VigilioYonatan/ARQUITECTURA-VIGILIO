@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "skipLibCheck": true,
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "allowSyntheticDefaultImports": true
+    },
+    "exclude": [
+        "./src/**/*.tsx",
+        "./src/components/**/*.ts",
+        "./src/libs/server/**/*.ts",
+        "./src/config/server/**/*.ts",
+        "./src/**/controller/*.ts",
+        "./src/**/services/*.ts",
+        "vite.config.ts"
+    ]
+}

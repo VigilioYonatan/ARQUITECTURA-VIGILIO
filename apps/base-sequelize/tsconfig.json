@@ -1,0 +1,30 @@
+{
+    "extends": "astro/tsconfigs/strict",
+    "compilerOptions": {
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "strictNullChecks": true,
+        "noImplicitAny": false,
+        "strictBindCallApply": false,
+        "forceConsistentCasingInFileNames": false,
+        "noFallthroughCasesInSwitch": false,
+        "jsxImportSource": "preact",
+        "jsx": "react-jsx",
+        "types": ["vitest/globals"],
+        "baseUrl": ".",
+        "paths": {
+            "@modules/*": ["src/modules/*"],
+            "@infrastructure/*": ["src/infrastructure/*"],
+            "@assets/*": ["src/assets/*"],
+            "@components/*": ["src/components/*"],
+            "@stores/*": ["src/stores/*"],
+            "@hooks/*": ["src/hooks/*"],
+            "@src/*": ["src/*"],
+            "react": ["node_modules/preact/compat/"],
+            "react-dom": ["node_modules/preact/compat/"]
+        }
+    },
+    "include": [".astro/types.d.ts", "src/*.d.ts", "**/*", "drizzle.config.ts"],
+    "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts"]
+}

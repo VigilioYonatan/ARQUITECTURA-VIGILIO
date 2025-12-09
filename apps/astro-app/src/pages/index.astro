@@ -1,0 +1,115 @@
+---
+import Card from "../components/Card.astro";
+import Newsletter from "../components/Newsletter.jsx";
+import Welcome from "../components/Welcome.astro";
+import Layout from "../layouts/Layout.astro";
+
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+---
+
+<Layout>
+	<Welcome />
+	
+	<div class="instructions ">
+		<h2 class="text-2xl! font-bold">🚀 Lección 2: Componentes UI</h2>
+		<p>
+			Acabamos de crear un componente <code>Card.astro</code>. 
+			Mira cómo lo usamos abajo pasando propiedades (props):
+		</p>
+		<div class="mb-12">
+			<Newsletter client:visible />
+		</div>
+
+		<ul role="list" class="link-card-grid">
+			<Card
+				href="/about"
+				title="Sobre nosotros"
+				body="Aprende cómo funciona el enrutamiento en Astro."
+			/>
+			<Card
+				href="/contact"
+				title="Contacto"
+				body="Prueba la navegación SPA con un formulario simple."
+			/>
+			<Card
+				href="/blog/first-post"
+				title="Blog: Primer Post"
+				body="Lee nuestro primer artículo renderizado desde Markdown."
+			/>
+			<Card
+				href="/blog/spa-navigation"
+				title="Blog: SPA Mode"
+				body="Aprende sobre ClientRouter y View Transitions."
+			/>
+			<Card
+				href="/blog/mdx-islands"
+				title="Blog: MDX + Islas"
+				body="Mira un componente de Preact interactivo dentro de un post."
+			/>
+			<Card
+				href="/ssr"
+				title="Server Side Rendering"
+				body="Página generada dinámicamente en el servidor (Node.js)."
+			/>
+			<Card
+				href="/hybrid-test"
+				title="Modo Híbrido (SSG)"
+				body="Página estática dentro de una app SSR. ¡Ultra rápida!"
+			/>
+			<Card
+				href="/isr-demo"
+				title="Modo ISR (Caché)"
+				body="SSR con esteroides. Se regenera cada 10 segundos."
+			/>
+			<Card
+				href="/images-demo"
+				title="Imágenes Optimizadas"
+				body="Astro Assets, CLS, WebP y Picture component."
+			/>
+			<Card
+				href="/dashboard"
+				title="Middleware Demo"
+				body="Ruta protegida. Intenta entrar sin loguearte."
+			/>
+			<Card
+				href="/islands"
+				title="Islands & Hidratación"
+				body="Aprende client:load, visible, idle y media."
+			/>
+			<Card
+				href="/shop"
+				title="Nano Stores (Estado)"
+				body="Carrito de compras compartiendo estado entre islas."
+			/>
+			<Card
+				href="/dashboard"
+				title="MPA Dashboard"
+				body="Enfoque clásico: Páginas .astro separadas (SSR)."
+			/>
+			<Card
+				href="/admin"
+				title="SPA Admin"
+				body="Enfoque moderno: Una sola página carga React Router."
+			/>
+		</ul>
+	</div>
+</Layout>
+
+<style>
+	.instructions {
+		margin: auto;
+		padding: 1rem;
+		width: 800px;
+		max-width: calc(100% - 2rem);
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+	}
+	.link-card-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+		gap: 2rem;
+		padding: 0;
+	}
+</style>

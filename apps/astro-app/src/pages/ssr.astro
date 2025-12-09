@@ -1,0 +1,76 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+// En modo SSR, esto se ejecuta CADA VEZ que alguien visita la página
+const serverTime = new Date().toLocaleTimeString();
+const randomNum = Math.floor(Math.random() * 100);
+---
+
+<Layout>
+    <main>
+        <a href="/" class="back-link">⬅ Volver</a>
+        
+        <h1>Modo Servidor (SSR) 🖥️</h1>
+        
+        <div class="card">
+            <p>Esta página se renderiza en el servidor en cada petición.</p>
+            
+            <div class="stat">
+                <span class="label">Hora del Servidor:</span>
+                <span class="value">{serverTime}</span>
+            </div>
+            
+            <div class="stat">
+                <span class="label">Número Aleatorio:</span>
+                <span class="value">{randomNum}</span>
+            </div>
+        </div>
+
+        <p>
+            También puedes consultar nuestra API: 
+            <a href="/api/time" target="_blank">/api/time</a>
+        </p>
+    </main>
+</Layout>
+
+<style>
+    main {
+        margin: auto;
+        padding: 1rem;
+        width: 800px;
+        max-width: calc(100% - 2rem);
+        color: white;
+        text-align: center;
+    }
+    .back-link {
+        display: block;
+        text-align: left;
+        color: #ccc;
+        margin-bottom: 2rem;
+    }
+    .card {
+        background: #23262d;
+        padding: 2rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+        border: 1px solid #333;
+    }
+    .stat {
+        margin: 1.5rem 0;
+        font-size: 1.5rem;
+    }
+    .label {
+        color: #aaa;
+        display: block;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    .value {
+        color: #4f39fa;
+        font-weight: bold;
+        font-size: 2.5rem;
+    }
+    a {
+        color: #4f39fa;
+    }
+</style>

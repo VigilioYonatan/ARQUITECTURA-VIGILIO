@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@theme {
+    --font-inter: "Inter", "Roboto", "Helvetica Neue", "Arial Nova",
+        "Nimbus Sans", Arial, sans-serif;
+}
+
+body {
+    @apply bg-[#13151a] text-white h-full w-full m-0 font-inter;
+}
+
+html {
+    @apply h-full w-full m-0;
+}

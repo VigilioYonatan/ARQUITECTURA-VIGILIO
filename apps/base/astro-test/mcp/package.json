@@ -1,0 +1,21 @@
+{
+    "name": "mi-primer-servidor-mcp",
+    "module": "index.ts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "start": "tsx index.ts",
+        "dev": "tsx watch index.ts"
+    },
+    "devDependencies": {
+        "@types/bun": "latest",
+        "tsx": "^4.21.0"
+    },
+    "peerDependencies": {
+        "typescript": "^5.9.3"
+    },
+    "dependencies": {
+        "@modelcontextprotocol/sdk": "^1.24.3",
+        "zod": "^4.1.13"
+    }
+}

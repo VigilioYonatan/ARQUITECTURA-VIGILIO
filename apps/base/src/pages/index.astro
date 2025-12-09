@@ -1,0 +1,18 @@
+---
+import Welcome from "../components/pages/Welcome.astro";
+import Layout from "../components/pages/Layout.astro";
+
+
+// const response = await fetch("/api/users");
+// const result = await response.json();
+// console.log(result);
+const {title}=Astro.locals as {title:string}
+console.log({title});
+
+---
+
+<Layout>
+    <h1 class="text-3xl font-bold underline">{title} </h1>
+    <span>h 2</span>
+    <Welcome />
+</Layout>

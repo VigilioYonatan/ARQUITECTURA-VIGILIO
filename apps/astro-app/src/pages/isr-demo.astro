@@ -1,0 +1,96 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+// ISR en Astro = SSR + Headers de Caché
+export const prerender = false;
+
+// Configuración de Caché (ISR)
+// 1. public: Se puede cachear en CDNs compartidos.
+// 2. s-maxage=10: El CDN guarda la copia por 10 segundos.
+// 3. stale-while-revalidate=10: Si pasaron los 10s, sirve la vieja mientras genera la nueva en segundo plano.
+Astro.response.headers.set(
+    "Cache-Control",
+    "public, max-age=0, s-maxage=10, stale-while-revalidate=10",
+);
+
+const time = new Date().toLocaleTimeString();
+---
+
+<Layout>
+    <main>
+        <a href="/" class="back-link">⬅ Volver</a>
+        
+        <h1>Prueba de ISR 🔄</h1>
+        
+        <div class="card">
+            <p>
+                Esta página es <strong>SSR</strong>, pero le dice al servidor/CDN:
+                <br>
+                <em>"Guárdame en caché por 10 segundos".</em>
+            </p>
+            
+            <div class="stat">
+                <span class="label">Hora Generada:</span>
+                <span class="value">{time}</span>
+            </div>
+            
+            <div class="info">
+                <p><strong>Cómo probarlo:</strong></p>
+                <ol>
+                    <li>Recarga la página varias veces rápido.</li>
+                    <li>Si estás en local, verás la hora cambiar (porque no hay CDN).</li>
+                    <li>Si estuvieras en Vercel/Netlify, la hora se quedaría "congelada" por 10 segundos.</li>
+                </ol>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<style>
+    main {
+        margin: auto;
+        padding: 1rem;
+        width: 800px;
+        max-width: calc(100% - 2rem);
+        color: white;
+        text-align: center;
+    }
+    .back-link {
+        display: block;
+        text-align: left;
+        color: #ccc;
+        margin-bottom: 2rem;
+    }
+    .card {
+        background: #20242a;
+        padding: 2rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+        border: 1px solid #a855f7; /* Morado para ISR */
+    }
+    .stat {
+        margin: 1.5rem 0;
+        font-size: 1.5rem;
+    }
+    .label {
+        color: #aaa;
+        display: block;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    .value {
+        color: #a855f7;
+        font-weight: bold;
+        font-size: 2.5rem;
+    }
+    .info {
+        text-align: left;
+        background: rgba(0,0,0,0.2);
+        padding: 1rem;
+        border-radius: 4px;
+        margin-top: 2rem;
+    }
+    a {
+        color: #a855f7;
+    }
+</style>

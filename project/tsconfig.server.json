@@ -1,0 +1,51 @@
+{
+    "compilerOptions": {
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "resolvePackageJsonExports": true,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "declaration": true,
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "target": "ES2023",
+        "sourceMap": true,
+        "outDir": "./dist",
+        "baseUrl": "./",
+        "incremental": true,
+        "skipLibCheck": true,
+        "strictNullChecks": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitAny": false,
+        "strictBindCallApply": false,
+        "noFallthroughCasesInSwitch": false,
+        "paths": {
+            "@/*": ["./src/services/*"],
+            "~/*": ["./src/*"]
+        }
+    },
+    "include": ["src"],
+    "exclude": [
+        "node_modules",
+        "test",
+        "dist",
+        "**/*spec.ts",
+        "**/*.test.ts",
+        "src/hooks/**.ts",
+        "src/**/*.tsx",
+        "src/**/apis/**/*.ts",
+        "src/**/client/**/*.ts",
+        "src/**/client/**/*.tsx",
+        "src/components/**/*.ts",
+        "src/hooks",
+        "src/pages",
+        "src/config/test",
+        "src/**/hooks/*.ts",
+        "src/**/hooks/*.tsx",
+        "vite.config.ts",
+        "src/config/client/environments.config.ts",
+        "src/vite-env.d.ts"
+    ]
+}

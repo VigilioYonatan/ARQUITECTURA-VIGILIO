@@ -1,0 +1,108 @@
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: minio_s3
+    restart: unless-stopped
+    ports:
+      # Puerto API (Interno y Externo)
+      - "9000:9000"
+      # Puerto Consola (Visual)
+      - "9001:9001"
+    environment:
+      # Usamos variables por defecto o las que pongas en tu .env
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-root}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-password123}
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    labels:
+      - "traefik.enable=true"
+
+      # -----------------------------------------------------------
+      # 1. ROUTER UNIVERSAL PÚBLICO (Caché Agresivo)
+      # -----------------------------------------------------------
+      # Regla: Cualquier cosa que empiece por /public/
+      - "traefik.http.routers.minio-public-univ.rule=Host(`cdn.miweb.com`) && PathPrefix(`/public`)"
+      - "traefik.http.routers.minio-public-univ.entrypoints=websecure"
+      - "traefik.http.routers.minio-public-univ.tls.certresolver=myresolver"
+      # Middlewares: Rewrite -> Cache -> Security
+      - "traefik.http.routers.minio-public-univ.middlewares=univ-rewrite-public,minio-cache-headers,minio-security-headers"
+
+      # MIDDLEWARE REWRITE (LA MAGIA):
+      # Regex: Toma todo lo que hay después de "/public/"
+      # Input:  cdn.miweb.com/public/bucket-logos/logo.png
+      # Output: minio:9000/bucket-logos/logo.png
+      - "traefik.http.middlewares.univ-rewrite-public.replacepathregex.regex=^/public/(.*)"
+      - "traefik.http.middlewares.univ-rewrite-public.replacepathregex.replacement=/$$1"
+
+      # Headers de Caché (Igual que antes, para velocidad máxima)
+      - "traefik.http.middlewares.minio-cache-headers.headers.customresponseheaders.Cache-Control=public, max-age=31536000, immutable"
+
+      # -----------------------------------------------------------
+      # 2. ROUTER UNIVERSAL PRIVADO (Sin Caché / Presigned URLs)
+      # -----------------------------------------------------------
+      # Regla: Cualquier cosa que empiece por /private/
+      - "traefik.http.routers.minio-private-univ.rule=Host(`cdn.miweb.com`) && PathPrefix(`/private`)"
+      - "traefik.http.routers.minio-private-univ.entrypoints=websecure"
+      - "traefik.http.routers.minio-private-univ.tls.certresolver=myresolver"
+      # Middlewares: Rewrite -> Security (¡SIN CACHÉ!)
+      - "traefik.http.routers.minio-private-univ.middlewares=univ-rewrite-private,minio-security-headers"
+
+      # MIDDLEWARE REWRITE PRIVADO:
+      # Input:  cdn.miweb.com/private/bucket-facturas/factura-001.pdf?signature=...
+      # Output: minio:9000/bucket-facturas/factura-001.pdf?signature=...
+      - "traefik.http.middlewares.univ-rewrite-private.replacepathregex.regex=^/private/(.*)"
+      - "traefik.http.middlewares.univ-rewrite-private.replacepathregex.replacement=/$$1"
+
+      # -----------------------------------------------------------
+      # 3. SEGURIDAD GENERAL (Común para ambos)
+      # -----------------------------------------------------------
+      - "traefik.http.middlewares.minio-security-headers.headers.customresponseheaders.Server="
+      - "traefik.http.middlewares.minio-security-headers.headers.customresponseheaders.X-Amz-Request-Id="
+      - "traefik.http.middlewares.minio-security-headers.headers.customresponseheaders.Set-Cookie="
+
+      # Puerto interno
+      - "traefik.http.services.minio.loadbalancer.server.port=9000"
+    networks:
+      - dokploy-network
+    # Healthcheck: MinIO avisa a Docker cuando está listo de verdad
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy # Espera a que MinIO esté "Healthy"
+    # Script mejorado con bucle de espera y manejo de errores
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Esperando a MinIO...'
+      # Bucle: Intenta conectar cada 2 segundos hasta que funcione
+      until /usr/bin/mc alias set myminio http://minio:9000 ${MINIO_ROOT_USER:-root} ${MINIO_ROOT_PASSWORD:-password123}; do
+        echo 'MinIO no está listo, reintentando en 2s...'
+        sleep 2
+      done;
+
+      echo 'MinIO conectado. Creando buckets...'
+      # Crea el bucket solo si no existe
+      /usr/bin/mc mb --ignore-existing myminio/${BUCKET_NAME:-saas-bucket};
+
+      # Opcional: Hacerlo público (Cuidado con datos sensibles)
+      /usr/bin/mc anonymous set public myminio/${BUCKET_NAME:-saas-bucket};
+
+      echo 'Configuración completada exitosamente.'
+      exit 0;
+      "
+    networks:
+      - dokploy-network
+
+volumes:
+  minio_data: # Docker gestionará esto automáticamente
+
+networks:
+  dokploy-network:
+    external: true

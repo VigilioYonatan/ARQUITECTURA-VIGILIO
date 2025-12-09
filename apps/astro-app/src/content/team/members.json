@@ -1,0 +1,14 @@
+[
+    {
+        "id": "antigravity",
+        "name": "Antigravity",
+        "role": "AI Assistant",
+        "avatar": "🤖"
+    },
+    {
+        "id": "user",
+        "name": "User",
+        "role": "Lead Developer",
+        "avatar": "👨‍💻"
+    }
+]

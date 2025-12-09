@@ -1,0 +1,48 @@
+name: Deploy to Swarm
+
+on:
+    push:
+        branches: ["main"]
+
+env:
+    # Configuración de tu Registry Privado
+    REGISTRY: registry.tudominio.com
+    IMAGE_NAME: mi-app-increible
+
+    # Configuración de Dokploy (Webhook)
+    DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
+
+jobs:
+    build-and-deploy:
+        # Usar tu Runner Self-Hosted (¡Gratis y Rápido!)
+        runs-on: [self-hosted, swarm]
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            # 1. Login en tu Registry Privado
+            - name: Login to Private Registry
+              uses: docker/login-action@v2
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ secrets.REGISTRY_USER }}
+                  password: ${{ secrets.REGISTRY_PASSWORD }}
+
+            # 2. Construir y Subir Imagen (Build & Push)
+            # Usamos el caché nativo del runner para velocidad extrema
+            - name: Build and Push Docker image
+              uses: docker/build-push-action@v4
+              with:
+                  context: .
+                  push: true
+                  tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+                  # Optimización de caché
+                  cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+                  cache-to: type=inline
+
+            # 3. Desplegar en Dokploy (Vía Webhook)
+            # Dokploy recibe la señal y actualiza el servicio automáticamente
+            - name: Deploy to Dokploy
+              run: |
+                  curl -X POST "${{ env.DOKPLOY_WEBHOOK_URL }}"

@@ -1,0 +1,114 @@
+---
+import { Image, Picture, getImage } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+
+// 1. Importar imagen local (Recomendado)
+// Astro obtendrá metadatos automáticamente
+import localImage from "../assets/sample.svg";
+
+// 3. Generar imagen de fondo optimizada
+const optimizedBg = await getImage({ src: localImage, format: "webp", width: 1920 });
+---
+
+<Layout>
+    <main>
+        <a href="/" class="back-link">⬅ Volver</a>
+        
+        <h1>Astro Assets Demo 🖼️</h1>
+
+        <!-- Ejemplo de Background Image optimizado -->
+        <div class="hero" style={`background-image: url(${optimizedBg.src});`}>
+            <h2>Fondo optimizado con <code>getImage()</code></h2>
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>1. Local Image (Optimized)</h3>
+                <p>Astro detecta tamaño, evita CLS y convierte a WebP.</p>
+                <Image 
+                    src={localImage} 
+                    alt="Paisaje de ejemplo" 
+                    width={400} 
+                    class="rounded"
+                />
+            </div>
+
+            <div class="card">
+                <h3>2. Remote Image</h3>
+                <p>Requiere <code>width</code> y <code>height</code> explícitos.</p>
+                <Image 
+                    src="https://astro.build/assets/press/astro-logo-light-gradient.png" 
+                    alt="Logo de Astro" 
+                    width={300} 
+                    height={80}
+                    class="logo"
+                />
+            </div>
+
+            <div class="card full-width">
+                <h3>3. Picture (Art Direction)</h3>
+                <p>Diferentes tamaños/formatos según el dispositivo.</p>
+                <Picture 
+                    src={localImage} 
+                    formats={['avif', 'webp']}
+                    widths={[240, 540, 720]}
+                    sizes={`(max-width: 360px) 240px, (max-width: 720px) 540px, 720px`}
+                    alt="Imagen responsiva"
+                    class="rounded"
+                />
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<style>
+    main {
+        margin: auto;
+        padding: 1rem;
+        width: 800px;
+        max-width: calc(100% - 2rem);
+        color: white;
+        text-align: center;
+    }
+    .back-link {
+        display: block;
+        text-align: left;
+        color: #ccc;
+        margin-bottom: 2rem;
+    }
+    .hero {
+        height: 200px;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    .card {
+        background: #23262d;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid #333;
+    }
+    .full-width {
+        grid-column: 1 / -1;
+    }
+    .rounded {
+        border-radius: 8px;
+        max-width: 100%;
+        height: auto;
+    }
+    .logo {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+</style>

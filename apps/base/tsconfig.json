@@ -1,0 +1,25 @@
+{
+    "extends": "astro/tsconfigs/strict",
+    "compilerOptions": {
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "strictNullChecks": false,
+        "noImplicitAny": false,
+        "strictBindCallApply": false,
+        "forceConsistentCasingInFileNames": false,
+        "noFallthroughCasesInSwitch": false,
+        "types": ["vitest/globals"],
+        "paths": {
+            "@modules/*": ["./src/modules/*"],
+            "@infrastructure/*": ["./src/infrastructure/*"],
+            "@assets/*": ["./src/assets/*"],
+            "@components/*": ["./src/components/*"],
+            "@stores/*": ["./src/stores/*"],
+            "@hooks/*": ["./src/hooks/*"],
+            "@src/*": ["./src/*"]
+        }
+    },
+    "include": [".astro/types.d.ts", "**/*"],
+    "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts", ]
+}

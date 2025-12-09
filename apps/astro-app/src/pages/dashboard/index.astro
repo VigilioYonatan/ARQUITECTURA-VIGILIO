@@ -1,0 +1,39 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+// Logout logic
+if (Astro.request.method === "POST") {
+    Astro.cookies.delete("auth", { path: "/" });
+    return Astro.redirect("/login");
+}
+---
+
+<Layout title="Dashboard">
+    <main>
+        <h1>Dashboard Secreto 🕵️‍♂️</h1>
+        <p>Bienvenido, <strong>{Astro.locals.user?.name}</strong></p>
+        <p>Si estás viendo esto, es porque el Middleware te dejó pasar.</p>
+        
+        <form method="POST">
+            <button type="submit" class="logout">Cerrar Sesión</button>
+        </form>
+    </main>
+</Layout>
+
+<style>
+    main {
+        text-align: center;
+        color: white;
+        padding: 2rem;
+    }
+    h1 { color: #00ffaa; }
+    .logout {
+        margin-top: 2rem;
+        padding: 0.5rem 1rem;
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>

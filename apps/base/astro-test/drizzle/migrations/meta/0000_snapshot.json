@@ -1,0 +1,843 @@
+{
+  "id": "3d3face6-fc57-4da7-b379-8e3ae43eb0dc",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.address": {
+      "name": "address",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "ubigeo": {
+          "name": "ubigeo",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "urbanizacion": {
+          "name": "urbanizacion",
+          "type": "varchar(300)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "direccion": {
+          "name": "direccion",
+          "type": "varchar(300)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cod_local": {
+          "name": "cod_local",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "city_id": {
+          "name": "city_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "address_city_id_city_id_fk": {
+          "name": "address_city_id_city_id_fk",
+          "tableFrom": "address",
+          "tableTo": "city",
+          "columnsFrom": [
+            "city_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "address_user_id_user_id_fk": {
+          "name": "address_user_id_user_id_fk",
+          "tableFrom": "address",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.company": {
+      "name": "company",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "ruc": {
+          "name": "ruc",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "razon_social": {
+          "name": "razon_social",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nombre_comercial": {
+          "name": "nombre_comercial",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sol_user": {
+          "name": "sol_user",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sol_pass": {
+          "name": "sol_pass",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "client_id": {
+          "name": "client_id",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "client_secret": {
+          "name": "client_secret",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "certificado_password": {
+          "name": "certificado_password",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mode": {
+          "name": "mode",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "logo_facturacion": {
+          "name": "logo_facturacion",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "certificado_digital": {
+          "name": "certificado_digital",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "empresa_id": {
+          "name": "empresa_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "company_empresa_id_empresa_id_fk": {
+          "name": "company_empresa_id_empresa_id_fk",
+          "tableFrom": "company",
+          "tableTo": "empresa",
+          "columnsFrom": [
+            "empresa_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.empresa": {
+      "name": "empresa",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name_empresa": {
+          "name": "name_empresa",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dial_code": {
+          "name": "dial_code",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "model_ai_groq": {
+          "name": "model_ai_groq",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "telefono": {
+          "name": "telefono",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token_ai": {
+          "name": "token_ai",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color_primary": {
+          "name": "color_primary",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "timezone": {
+          "name": "timezone",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "enabled_automatic_payment": {
+          "name": "enabled_automatic_payment",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "enabled_send_sunat": {
+          "name": "enabled_send_sunat",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "enabled_send_pdf": {
+          "name": "enabled_send_pdf",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "logo_facturacion": {
+          "name": "logo_facturacion",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "certificado_digital": {
+          "name": "certificado_digital",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address_id": {
+          "name": "address_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "empresa_address_id_address_id_fk": {
+          "name": "empresa_address_id_address_id_fk",
+          "tableFrom": "empresa",
+          "tableTo": "address",
+          "columnsFrom": [
+            "address_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "empresa_user_id_user_id_fk": {
+          "name": "empresa_user_id_user_id_fk",
+          "tableFrom": "empresa",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.file": {
+      "name": "file",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "file": {
+          "name": "file",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "history": {
+          "name": "history",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "file_user_id_user_id_fk": {
+          "name": "file_user_id_user_id_fk",
+          "tableFrom": "file",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "file_name_unique": {
+          "name": "file_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.icons": {
+      "name": "icons",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "icon": {
+          "name": "icon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "photo": {
+          "name": "photo",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "icons_code_unique": {
+          "name": "icons_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.city": {
+      "name": "city",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "region_id": {
+          "name": "region_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "city_region_id_region_id_fk": {
+          "name": "city_region_id_region_id_fk",
+          "tableFrom": "city",
+          "tableTo": "region",
+          "columnsFrom": [
+            "region_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.country": {
+      "name": "country",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dial_code": {
+          "name": "dial_code",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "country_code_unique": {
+          "name": "country_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        },
+        "country_dial_code_unique": {
+          "name": "country_dial_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "dial_code"
+          ]
+        },
+        "country_name_unique": {
+          "name": "country_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.region": {
+      "name": "region",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "country_id": {
+          "name": "country_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "region_country_id_country_id_fk": {
+          "name": "region_country_id_country_id_fk",
+          "tableFrom": "region",
+          "tableTo": "country",
+          "columnsFrom": [
+            "country_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.user": {
+      "name": "user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_name": {
+          "name": "user_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "documento_code": {
+          "name": "documento_code",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "documento": {
+          "name": "documento",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "father_lastname": {
+          "name": "father_lastname",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mother_lastname": {
+          "name": "mother_lastname",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gender": {
+          "name": "gender",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'masculino'"
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "profesion": {
+          "name": "profesion",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "presentation": {
+          "name": "presentation",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "photo": {
+          "name": "photo",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wallpaper": {
+          "name": "wallpaper",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "name": "role",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "telefono": {
+          "name": "telefono",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_register_automatic": {
+          "name": "is_register_automatic",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "estudiante_status": {
+          "name": "estudiante_status",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "intentos_session": {
+          "name": "intentos_session",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "intentos_session_date": {
+          "name": "intentos_session_date",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ultima_conexion": {
+          "name": "ultima_conexion",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "enabled_notifications_webpush": {
+          "name": "enabled_notifications_webpush",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "address": {
+          "name": "address",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subscription": {
+          "name": "subscription",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

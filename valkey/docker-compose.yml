@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  valkey:
+    image: valkey/valkey:7.2
+    hostname: valkey
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager # Preferible en manager para persistencia simple, o usar constraints de nodo
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+        reservations:
+          cpus: "0.2"
+          memory: 256M
+    volumes:
+      - valkey_data:/data
+    networks:
+      - dokploy-network
+      - valkey-net
+    command: valkey-server --appendonly yes --requirepass ${VALKEY_PASSWORD}
+
+  # GUI para administrar Valkey (Opcional pero útil)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:valkey:6379:0:${VALKEY_PASSWORD}
+    networks:
+      - valkey-net
+      - dokploy-network
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.valkey-gui.rule=Host(`valkey.tudominio.com`)"
+        - "traefik.http.routers.valkey-gui.entrypoints=websecure"
+        - "traefik.http.routers.valkey-gui.tls.certresolver=letsencrypt"
+        - "traefik.http.services.valkey-gui.loadbalancer.server.port=8081"
+        - "traefik.http.routers.valkey-gui.service=valkey-gui"
+
+networks:
+  dokploy-network:
+    external: true
+  valkey-net:
+    driver: overlay
+
+volumes:
+  valkey_data:

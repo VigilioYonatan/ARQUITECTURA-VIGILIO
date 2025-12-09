@@ -1,0 +1,85 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+// 1. Generate a new path for every collection entry
+export async function getStaticPaths() {
+    const blogEntries = await getCollection("blog");
+    return blogEntries.map((entry) => ({
+        params: { slug: entry.slug },
+        props: { entry },
+    }));
+}
+
+// 2. For your template, you can get the entry directly from the prop
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<Layout>
+    <main>
+        <a href="/" class="back-link">⬅ Volver al inicio</a>
+        <article>
+            <h1>{entry.data.title}</h1>
+            <div class="meta">
+                <span>Por: {entry.data.author}</span>
+                <span>Fecha: {entry.data.pubDate.toLocaleDateString()}</span>
+            </div>
+            
+            <div class="content">
+                <Content />
+            </div>
+        </article>
+    </main>
+</Layout>
+
+<style>
+    main {
+        margin: auto;
+        padding: 1rem;
+        width: 800px;
+        max-width: calc(100% - 2rem);
+        color: white;
+    }
+    .back-link {
+        display: inline-block;
+        margin-bottom: 2rem;
+        color: #ccc;
+        text-decoration: none;
+    }
+    .back-link:hover {
+        color: white;
+    }
+    h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    .meta {
+        display: flex;
+        gap: 1rem;
+        color: #aaa;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+    }
+    .content {
+        line-height: 1.8;
+        font-size: 1.1rem;
+    }
+    /* Style markdown content */
+    .content :global(h2) {
+        margin-top: 2rem;
+        color: rgb(var(--accent-light));
+    }
+    .content :global(code) {
+        background: #23262d;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+    }
+    .content :global(pre) {
+        background: #23262d;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+    }
+</style>
