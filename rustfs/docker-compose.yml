@@ -1,0 +1,45 @@
+services:
+  rustfs:
+    image: rustfs/rustfs:1.0.0-alpha.48
+    hostname: rustfs1
+    ports:
+      - "9000:9000"
+    environment:
+      - RUSTFS_VOLUMES=/data
+      - RUSTFS_ADDRESS=0.0.0.0:9000
+      - RUSTFS_CONSOLE_ENABLE=true
+      - RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY}
+      - RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY}
+      - RUSTFS_LOG_LEVEL=info
+    volumes:
+      - /mnt/disk1:/data
+    networks:
+      - dokploy-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.rustfs.rule=Host(`rustfs-2.duckdns.org`)
+        - traefik.http.routers.rustfs.entrypoints=websecure
+        - traefik.http.routers.rustfs.tls.certresolver=letsencrypt
+        - traefik.http.services.rustfs.loadbalancer.server.port=9000
+        - traefik.docker.network=dokploy-network
+
+networks:
+  dokploy-network:
+    external: true
+
+  # ver console de rustfs
+  # docker service logs -f rustfs_rustfs
+
+#  ver contenedores  
+#docker service ps rustfs_rustfs
+
+# eliminar stack
+# docker stack rm rustfs
+
+
+# si no funciona la contraseña
+#export RUSTFS_ACCESS_KEY=admin; export RUSTFS_SECRET_KEY=admin123; docker stack deploy -c rustfs-stack.yml rustfs

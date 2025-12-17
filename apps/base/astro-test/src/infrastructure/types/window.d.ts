@@ -1,7 +1,7 @@
 import type { Global } from "./request";
 
 declare global {
-    interface Window {
-        locals: Global;
-    }
+	interface Window {
+		locals: Global;
+	}
 }

@@ -1,147 +1,161 @@
-import {
-    custom,
-    literal,
-    object,
-    safeParse,
-    string,
-    union,
-} from "@vigilio/valibot";
+import { z } from "@infrastructure/config/zod-i18n.config";
 import dotenv from "dotenv";
 
-dotenv.config({ path: [".env"], debug: false });
+dotenv.config({ debug: false, path: [".env"] });
 
-type NodeMode = "production" | "development" | "test";
-export interface Enviroments {
-    PUBLIC_NAME_APP: string;
-    NODE_ENV: NodeMode;
-    PUBLIC_URL: string;
-    PUBLIC_PORT: string;
-    PORT: number;
-    DB_HOST: string;
-    DB_PORT: number;
-    DB_NAME: string;
-    DB_USER: string;
-    DB_PASS: string;
-    DATABASE_URL: string;
-    JWT_KEY: string;
-    // upload
-    MINIO_ENDPOINT: string;
-    MINIO_PORT: number;
-    MINIO_ROOT_USER: string;
-    MINIO_ROOT_PASSWORD: string;
-    MINIO_BUCKET_NAME: string;
-    MINIO_REGION: string;
-    MINIO_INTERNAL_ENDPOINT: string;
-    MINIO_PUBLIC_ENDPOINT: string;
-    // mail
-    PUBLIC_HMAC_KEY: string;
-    MAIL_HOST: string;
-    MAIL_PORT: string;
-    MAIL_USER: string;
-    MAIL_PASS: string;
-    // cache
-    REDIS_HOST: string;
-    REDIS_PORT: number;
-    REDIS_PASSWORD: string;
-}
+// ============================================================================
+// SCHEMA DE VALIDACIÓN CON ZOD
+// ============================================================================
 
-function enviroments(): Enviroments {
-    return {
-        PUBLIC_NAME_APP: process.env.PUBLIC_NAME_APP as string,
-        NODE_ENV: process.env.NODE_ENV! as NodeMode,
-        PORT: Number(process.env.PORT!),
-        PUBLIC_URL: process.env.PUBLIC_URL!,
-        PUBLIC_PORT: process.env.PUBLIC_PORT!,
+/**
+ * Schema de validación para variables de entorno.
+ * Usa z.coerce para conversión automática de tipos.
+ */
+export const environmentsSchema = z
+    .object({
+        // App
+        PUBLIC_NAME_APP: z.string().min(1).default("MyApp"),
+        NODE_ENV: z
+            .enum(["production", "development", "staging", "test"])
+            .default("development"),
+        PUBLIC_URL: z.url(),
+        PUBLIC_PORT: z.coerce.number().int().positive(),
+        PORT: z.coerce.number().int().positive().default(3000),
 
-        // db
-        DB_HOST: process.env.DB_HOST!,
-        DB_PORT: Number(process.env.DB_PORT)!,
-        DB_NAME: process.env.DB_NAME!,
-        DB_USER: process.env.DB_USER!,
-        DB_PASS: process.env.DB_PASS!,
-        DATABASE_URL: process.env.DATABASE_URL!,
+        // Database
+        DB_HOST: z.string().min(1),
+        DB_PORT: z.coerce.number().int().min(1).max(65535).default(5432),
+        DB_NAME: z.string().min(1),
+        DB_USER: z.string().min(1),
+        DB_PASS: z.string().min(1),
+        DATABASE_URL: z
+            .string()
+            .min(1)
+            .refine(
+                (url) => url.startsWith("postgres"),
+                "DATABASE_URL debe ser una URL de PostgreSQL"
+            ),
 
-        // cache
-        REDIS_HOST: process.env.REDIS_HOST!,
-        REDIS_PORT: Number(process.env.REDIS_PORT!),
-        REDIS_PASSWORD: process.env.REDIS_PASSWORD!,
+        // Cache (Redis/Dragonfly)
+        REDIS_HOST: z.string().min(1).default("localhost"),
+        REDIS_PORT: z.coerce.number().int().positive().default(6379),
+        REDIS_PASSWORD: z.string().optional(),
 
-        // jwt
-        JWT_KEY: process.env.JWT_KEY!,
+        // JWT - SEGURIDAD CRÍTICA
+        JWT_KEY: z
+            .string()
+            .min(32, "JWT_KEY debe tener al menos 32 caracteres"),
+        JWT_EXPIRES_IN: z.string().default("1h"),
+        JWT_REFRESH_KEY: z.string().min(32).optional(),
+        JWT_REFRESH_EXPIRES_IN: z.string().default("7d"),
 
-        // upload
-        MINIO_ENDPOINT: process.env.MINIO_ENDPOINT!,
-        MINIO_PORT: Number(process.env.MINIO_PORT!),
-        MINIO_ROOT_USER: process.env.MINIO_ROOT_USER!,
-        MINIO_ROOT_PASSWORD: process.env.MINIO_ROOT_PASSWORD!,
-        MINIO_BUCKET_NAME: process.env.MINIO_BUCKET_NAME!,
-        MINIO_REGION: process.env.MINIO_REGION!,
-        MINIO_INTERNAL_ENDPOINT: "http://minio:9000",
-        MINIO_PUBLIC_ENDPOINT: "http://localhost:9000",
-        // mail
-        PUBLIC_HMAC_KEY: process.env.PUBLIC_HMAC_KEY!,
-        MAIL_HOST: process.env.MAIL_HOST!,
-        MAIL_PORT: process.env.MAIL_PORT!,
-        MAIL_USER: process.env.MAIL_USER!,
-        MAIL_PASS: process.env.MAIL_PASS!,
-    };
-}
+        // HMAC
+        PUBLIC_HMAC_KEY: z
+            .string()
+            .min(16, "HMAC_KEY debe tener al menos 16 caracteres"),
 
-const environmentsSchema = object({
-    NODE_ENV: union(
-        [literal("production"), literal("development"), literal("test")],
-        "development"
-    ),
-    PUBLIC_ENV: union(
-        [literal("production"), literal("development"), literal("test")],
-        "development"
-    ),
-    PUBLIC_URL: string(),
-    PUBLIC_PORT: string([custom((val) => !Number.isNaN(Number(val)))]),
-    PORT: string([custom((val) => !Number.isNaN(Number(val)))]),
+        // Storage (MinIO/RustFS)
+        RUSTFS_ENDPOINT: z.string().min(1),
+        RUSTFS_PORT: z.coerce.number().int().positive().default(9000),
+        RUSTFS_ROOT_USER: z.string().min(1),
+        RUSTFS_ROOT_PASSWORD: z.string().min(8),
+        RUSTFS_BUCKET_NAME: z.string().min(1),
+        RUSTFS_REGION: z.string().default("us-east-1"),
+        RUSTFS_INTERNAL_ENDPOINT: z.string().url().optional(),
+        RUSTFS_PUBLIC_ENDPOINT: z.string().url().optional(),
 
-    // db
-    DB_HOST: string(),
-    DB_PORT: string([custom((val) => !Number.isNaN(Number(val)))]),
-    DB_NAME: string(),
-    DB_USER: string(),
-    DB_PASS: string(),
+        // Mail
+        MAIL_HOST: z.string().min(1),
+        MAIL_PORT: z.coerce.number().int().positive().default(587),
+        MAIL_USER: z.string().min(1),
+        MAIL_PASS: z.string().min(1),
+        MAIL_FROM: z.email().optional(),
+        MAIL_FROM_NAME: z.string().optional(),
 
-    // minio
-    MINIO_ENDPOINT: string(),
-    MINIO_PORT: string([custom((val) => !Number.isNaN(Number(val)))]),
-    MINIO_ACCESS_KEY: string(),
-    MINIO_SECRET_KEY: string(),
-    MINIO_BUCKET: string(),
-    MINIO_REGION: string(),
+        // Security extras
+        CORS_ORIGINS: z.string().default("*"),
+        THROTTLE_TTL: z.coerce.number().int().positive().default(60),
+        THROTTLE_LIMIT: z.coerce.number().int().positive().default(100),
+        LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
+    })
+    .refine(
+        (data) => {
+            // En producción, passwords de Redis y refresh key son obligatorios
+            if (data.NODE_ENV === "production") {
+                return !!data.REDIS_PASSWORD && !!data.JWT_REFRESH_KEY;
+            }
+            return true;
+        },
+        {
+            message:
+                "REDIS_PASSWORD y JWT_REFRESH_KEY son obligatorios en producción",
+        }
+    );
 
-    // cache
-    REDIS_HOST: string(),
-    REDIS_PORT: string([custom((val) => !Number.isNaN(Number(val)))]),
-    REDIS_PASSWORD: string(),
+// ============================================================================
+// TIPOS INFERIDOS DEL SCHEMA
+// ============================================================================
 
-    // jwt
-    JWT_KEY: string(),
-    PUBLIC_HMAC_KEY: string(),
+/** Tipo inferido automáticamente del schema Zod */
+export type Environments = z.infer<typeof environmentsSchema>;
 
-    // mail
-    MAIL_HOST: string(),
-    MAIL_PORT: string([custom((val) => !Number.isNaN(Number(val)))]),
-    MAIL_USER: string(),
-    MAIL_PASS: string(),
-});
+/** Modos de Node.js disponibles */
+export type NodeMode = Environments["NODE_ENV"];
 
-export async function validateEnvironments() {
-    const data = await safeParse(environmentsSchema, environmentsSchema);
-    if (!data.success) {
-        // biome-ignore lint/suspicious/noConsole: <explanation>
+// ============================================================================
+// CACHE DE ENVIRONMENTS VALIDADOS
+// ============================================================================
+
+let cachedEnvironments: Environments | null = null;
+
+/**
+ * Obtiene las variables de entorno validadas.
+ * Usa cache para evitar re-validación en cada llamada.
+ *
+ * @throws {Error} Si las variables de entorno son inválidas
+ * @returns {Environments} Variables de entorno tipadas y validadas
+ */
+export function getEnvironments(): Environments {
+    if (cachedEnvironments) {
+        return cachedEnvironments;
+    }
+
+    const result = environmentsSchema.safeParse(process.env);
+
+    if (!result.success) {
+        // NO loggear valores para evitar exponer secrets
+        const missingVars = result.error.issues.map((issue) => {
+            const path = issue.path.join(".");
+            return `  - ${path}: ${issue.message}`;
+        });
+
+        // biome-ignore lint/suspicious/noConsole: Necesario para errores críticos
         console.error(
-            "❌ Invalid environment variables:",
-            data.issues.map((issue) => issue.message).join("\n")
+            `\n❌ Variables de entorno inválidas:\n${missingVars.join("\n")}\n`
         );
         process.exit(1);
     }
-    // biome-ignore lint/suspicious/noConsole: <explanation>
-    console.log("[ENVIRONMENTS]: Funcionando correctamente");
+
+    cachedEnvironments = result.data;
+    return cachedEnvironments;
 }
-export default enviroments;
+
+/**
+ * Valida las variables de entorno al iniciar la aplicación.
+ * Debe llamarse antes de inicializar NestJS.
+ */
+export function validateEnvironments(): void {
+    const env = getEnvironments();
+    const mode = env.NODE_ENV;
+
+    // biome-ignore lint/suspicious/noConsole: Log informativo de inicio
+    console.log(`✅ [ENVIRONMENTS] Validado correctamente (${mode})`);
+}
+
+/**
+ * Retorna las variables de entorno para ConfigModule de NestJS.
+ * Compatible con ConfigModule.forRoot({ load: [environments] })
+ */
+export default function environments(): Environments {
+    return getEnvironments();
+}

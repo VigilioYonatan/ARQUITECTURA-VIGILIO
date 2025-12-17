@@ -1,25 +1,17 @@
-import { SVG_REGEX, timestampsObject } from "@infrastructure/libs";
-import { filesSchema } from "@modules/uploads/modules/upload.schema";
-import {
-    array,
-    type Input,
-    nullable,
-    number,
-    object,
-    regex,
-    string,
-} from "@vigilio/valibot";
+import { filesSchema } from "@modules/uploads/schemas/upload.schema";
+import { z } from "zod";
 
-export const iconSchema = object({
-    id: number(),
-    code: string(),
-    name: string(),
-    slug: string(),
-    photo: array(filesSchema([100, 300])),
-    ...timestampsObject.entries,
+export const iconSchema = z.object({
+    id: z.number(),
+    code: z.string(),
+    name: z.string(),
+    slug: z.string(),
+    photo: z.array(filesSchema([100, 300])),
+    created_at: z.date(),
+    updated_at: z.date(),
 });
 
-export type IconSchema = Input<typeof iconSchema>;
+export type IconSchema = z.infer<typeof iconSchema>;
 
 export type IconSchemaFromServer = IconSchema & {
     // user_academic: UserCreated;

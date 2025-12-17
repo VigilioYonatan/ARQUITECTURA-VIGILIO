@@ -1,15 +1,30 @@
-import enviroments from "@infrastructure/config/server/environments.config";
+import environments from "@infrastructure/config/server/environments.config";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
+/**
+ * Módulo de configuración global de la aplicación.
+ *
+ * @description
+ * - `isGlobal: true` - Disponible en toda la app sin importar
+ * - `cache: true` - Lee process.env una sola vez (performance)
+ * - `expandVariables: true` - Permite ${VAR} en .env
+ * - Validación Zod se ejecuta al cargar environments()
+ *
+ * @example
+ * // Inyectar en cualquier servicio
+ * constructor(private configService: ConfigService<Environments>) {
+ *   const port = this.configService.get('PORT');
+ * }
+ */
 @Module({
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            load: [enviroments],
+            load: [environments],
             envFilePath: [".env"],
-            cache: true, // Mejora performance leyendo process.env una sola vez
-            expandVariables: true, // Permite usar ${VAR} dentro del .env
+            cache: true,
+            expandVariables: true,
         }),
     ],
     exports: [ConfigModule],

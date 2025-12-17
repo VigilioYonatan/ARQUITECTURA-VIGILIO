@@ -1,4 +1,4 @@
-import type { Enviroments } from "@infrastructure/config/server/environments.config";
+import type { Environments } from "@infrastructure/config/server/environments.config";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import nodemailer from "nodemailer";
@@ -7,7 +7,7 @@ import type { MailOptions } from "nodemailer/lib/json-transport";
 @Injectable()
 export class MailService {
     private transporter: nodemailer.Transporter;
-    constructor(private readonly configService: ConfigService<Enviroments>) {
+    constructor(private readonly configService: ConfigService<Environments>) {
         this.transporter = nodemailer.createTransport({
             host: this.configService.get("MAIL_HOST"), // o tu proveedor SMTP
             port: this.configService.get("MAIL_PORT"),

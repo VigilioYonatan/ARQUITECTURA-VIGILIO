@@ -1,4 +1,4 @@
-import type { Enviroments } from "@infrastructure/config/server/environments.config";
+import type { Environments } from "@infrastructure/config/server/environments.config";
 import { Global, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -14,7 +14,7 @@ export const DRIZZLE = Symbol("DRIZZLE_CONNECTION");
         {
             provide: DRIZZLE,
             inject: [ConfigService],
-            useFactory: async (configService: ConfigService<Enviroments>) => {
+            useFactory: async (configService: ConfigService<Environments>) => {
                 const pool = new Pool({
                     connectionString: configService.getOrThrow("DATABASE_URL"),
                 });

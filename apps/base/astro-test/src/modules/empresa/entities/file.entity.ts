@@ -1,6 +1,6 @@
 import type { Entity } from "@infrastructure/types/server";
-import type { FilesSchema } from "@modules/uploads/modules/upload.schema";
-import { userEntity } from "@modules/user/entities/user.entity";
+import type { FilesSchema } from "@modules/uploads/schemas/upload.schema";
+import { userEntity } from "@modules/users/entities/user.entity";
 import { type InferSelectModel, relations } from "drizzle-orm";
 import {
     integer,

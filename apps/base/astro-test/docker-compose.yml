@@ -13,6 +13,18 @@ services:
             - "${DB_PORT}:5432"
         networks:
             - dokploy-network
+
+    dragonfly:
+        image: "docker.dragonflydb.io/dragonflydb/dragonfly"
+        ulimits:
+            memlock: -1
+        ports:
+            - "6379:6379"
+        container_name: dragonfly_db
+        restart: always
+        networks:
+            - dokploy-network
+
     app:
         container_name: template_app
         build:
@@ -22,31 +34,71 @@ services:
         ports:
             - "${PORT}:${PORT}"
         environment:
-            PUBLIC_APP_NAME: ${PUBLIC_APP_NAME}
+            # App
+            PUBLIC_NAME_APP: ${PUBLIC_NAME_APP}
             NODE_ENV: ${NODE_ENV}
             PUBLIC_ENV: ${PUBLIC_ENV}
             PORT: ${PORT}
             PUBLIC_URL: ${PUBLIC_URL}
             PUBLIC_PORT: ${PUBLIC_PORT}
-            DB_HOST: ${DB_HOST}
-            DB_PORT: ${DB_PORT}
+
+            # Database
+            DB_HOST: postgres_db
+            DB_PORT: 5432
             DB_USER: ${DB_USER}
             DB_PASS: ${DB_PASS}
             DB_NAME: ${DB_NAME}
             DATABASE_URL: ${DATABASE_URL}
-            MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-            MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-            MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME}
+
+            # Cache (Redis/Dragonfly)
+            REDIS_HOST: dragonfly
+            REDIS_PORT: 6379
+            REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+
+            # JWT
+            JWT_KEY: ${JWT_KEY}
+            JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
+            JWT_REFRESH_KEY: ${JWT_REFRESH_KEY:-}
+            JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
+
+            # HMAC
+            PUBLIC_HMAC_KEY: ${PUBLIC_HMAC_KEY}
+
+            # Storage (RustFS/MinIO)
+            RUSTFS_ENDPOINT: ${RUSTFS_ENDPOINT}
+            RUSTFS_PORT: ${RUSTFS_PORT}
+            RUSTFS_ROOT_USER: ${RUSTFS_ROOT_USER}
+            RUSTFS_ROOT_PASSWORD: ${RUSTFS_ROOT_PASSWORD}
+            RUSTFS_BUCKET_NAME: ${RUSTFS_BUCKET_NAME}
+            RUSTFS_REGION: ${RUSTFS_REGION}
+            RUSTFS_INTERNAL_ENDPOINT: ${RUSTFS_INTERNAL_ENDPOINT:-}
+            RUSTFS_PUBLIC_ENDPOINT: ${RUSTFS_PUBLIC_ENDPOINT:-}
+
+            # Mail
             MAIL_HOST: ${MAIL_HOST}
             MAIL_PORT: ${MAIL_PORT}
-            JWT_KEY: ${JWT_KEY}
-            PUBLIC_HMAC_KEY: ${PUBLIC_HMAC_KEY}
-            PUBLIC_PLUBIC_VAPID_EMAIL: ${PUBLIC_PLUBIC_VAPID_EMAIL}
-            PUBLIC_PRIVATE_VAPID_KEY: ${PUBLIC_PRIVATE_VAPID_KEY}
+            MAIL_USER: ${MAIL_USER}
+            MAIL_PASS: ${MAIL_PASS}
+            MAIL_FROM: ${MAIL_FROM:-}
+            MAIL_FROM_NAME: ${MAIL_FROM_NAME:-}
+
+            # Security
+            CORS_ORIGINS: ${CORS_ORIGINS:-*}
+            THROTTLE_TTL: ${THROTTLE_TTL:-60}
+            THROTTLE_LIMIT: ${THROTTLE_LIMIT:-100}
+            LOG_LEVEL: ${LOG_LEVEL:-info}
+
+            # VAPID (Push Notifications)
+            PUBLIC_VAPID_KEY: ${PUBLIC_VAPID_KEY:-}
+            PRIVATE_VAPID_KEY: ${PRIVATE_VAPID_KEY:-}
+
+            # Dev tools
             CHOKIDAR_USEPOLLING: true
             CHOKIDAR_INTERVAL: 250
+
         depends_on:
             - postgres_db
+            - dragonfly
         restart: always
         volumes:
             - ./:/usr/src/app

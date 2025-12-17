@@ -3,19 +3,19 @@ import { SeederModule } from "./seeder.module";
 import { SeederService } from "./seeder.service";
 
 async function bootstrap() {
-    // createApplicationContext crea la app SIN levantar Express/Fastify
-    // Es perfecto para scripts, cronjobs y seeders.
-    const app = await NestFactory.createApplicationContext(SeederModule);
+	// createApplicationContext crea la app SIN levantar Express/Fastify
+	// Es perfecto para scripts, cronjobs y seeders.
+	const app = await NestFactory.createApplicationContext(SeederModule);
 
-    try {
-        const seeder = app.get(SeederService);
-        await seeder.run();
-    } catch (error) {
-        // biome-ignore lint/suspicious/noConsole: <explanation>
-        console.error("❌ Error en el Seeder:", error);
-    } finally {
-        await app.close(); // Cerramos la conexión al terminar
-    }
+	try {
+		const seeder = app.get(SeederService);
+		await seeder.run();
+	} catch (error) {
+		// biome-ignore lint/suspicious/noConsole: <explanation>
+		console.error("❌ Error en el Seeder:", error);
+	} finally {
+		await app.close(); // Cerramos la conexión al terminar
+	}
 }
 
 bootstrap();

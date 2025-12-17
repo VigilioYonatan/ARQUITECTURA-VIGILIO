@@ -1,0 +1,82 @@
+name: Deploy Staging
+
+on:
+    push:
+        branches: [develop]
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    test_and_build:
+        name: 🧪 Test & Build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  cache: "pnpm"
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Lint & Format
+              run: pnpm run biome:check
+
+            - name: Unit Tests
+              run: pnpm test -- --run
+
+            - name: Build Application
+              run: pnpm run build:serve
+
+    deploy:
+        name: 🚀 Deploy to Staging
+        needs: test_and_build
+        runs-on: ubuntu-latest
+        environment: staging
+        steps:
+            - name: 🚀 Inject Secrets & Deploy
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SERVER_IP }}
+                  username: ${{ secrets.SERVER_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }} # Optional, defaults to 22
+                  script: |
+                      # ⚠️ VERIFICA QUE ESTA RUTA SEA CORRECTA EN TU SERVIDOR
+                      cd /home/dokploy/app/my-app-staging 
+
+                      # Inyectar variables desde GitHub Secrets
+                      echo "${{ secrets.STAGING_ENV_FILE }}" > .env
+
+                      # Desplegar
+                      docker compose up -d --build
+
+    notify:
+        name: 📢 Notify Discord
+        needs: [deploy]
+        if: always()
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Discord Notification
+              env:
+                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+                  STATUS: ${{ needs.deploy.result }}
+              run: |
+                  if [ "$STATUS" == "success" ]; then
+                    COLOR=3066993 # Green
+                    TITLE="✅ Deploy Staging Exitoso"
+                  else
+                    COLOR=15158332 # Red
+                    TITLE="❌ Deploy Staging Fallido"
+                  fi
+
+                  curl -H "Content-Type: application/json" \
+                  -d "{\"embeds\": [{\"title\": \"$TITLE\", \"description\": \"Commit: $(git log -1 --pretty=%B)\", \"color\": $COLOR}]}" \
+                  $DISCORD_WEBHOOK

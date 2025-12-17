@@ -1,14 +1,19 @@
 import { useThemeStore } from "@stores/theme.store";
 import { useForm } from "react-hook-form";
-
 import "@vigilio/sweet/sweet.min.css";
-import type { IconStoreDto } from "@modules/empresa/dtos/icon.dto";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+    type IconStoreDto,
+    iconStoreDto,
+} from "@modules/empresa/dtos/icon.dto";
 import Form from "./form";
 
 function HelloWorld() {
     // console.log(env);
     const theme = useThemeStore();
-    const iconStoreForm = useForm<IconStoreDto>();
+    const iconStoreForm = useForm<IconStoreDto>({
+        resolver: zodResolver(iconStoreDto),
+    });
     function onIconStore(body: IconStoreDto) {
         console.log(body);
     }

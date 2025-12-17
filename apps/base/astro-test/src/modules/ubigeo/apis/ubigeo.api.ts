@@ -4,29 +4,29 @@ import type { CountrySchema } from "../schemas/country.schema";
 import type { RegionSchema } from "../schemas/region.schema";
 
 export function unbigeoIndexApi() {
-    return useQuery<UnbigeoIndexQueryAPI, UnbigeoIndexQueryAPIError>(
-        "/ubigeo/",
-        async (url) => {
-            const response = await fetch(`/api${url}`);
-            const result = await response.json();
-            if (!response.ok) {
-                throw result;
-            }
+	return useQuery<UnbigeoIndexQueryAPI, UnbigeoIndexQueryAPIError>(
+		"/ubigeo/",
+		async (url) => {
+			const response = await fetch(`/api${url}`);
+			const result = await response.json();
+			if (!response.ok) {
+				throw result;
+			}
 
-            return result;
-        }
-    );
+			return result;
+		},
+	);
 }
 
 export interface UnbigeoIndexQueryAPI {
-    success: boolean;
-    data: (CountrySchema & {
-        regions: (RegionSchema & {
-            cities: CitySchema[];
-        })[];
-    })[];
+	success: boolean;
+	data: (CountrySchema & {
+		regions: (RegionSchema & {
+			cities: CitySchema[];
+		})[];
+	})[];
 }
 interface UnbigeoIndexQueryAPIError {
-    success: false;
-    message: string;
+	success: false;
+	message: string;
 }

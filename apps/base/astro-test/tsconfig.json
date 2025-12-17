@@ -7,6 +7,7 @@
         "strictNullChecks": true,
         "noImplicitAny": false,
         "strictBindCallApply": false,
+        "strict": true,
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false,
         "jsxImportSource": "preact",
@@ -26,5 +27,5 @@
         }
     },
     "include": [".astro/types.d.ts", "src/*.d.ts", "**/*", "drizzle.config.ts"],
-    "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts"]
+    "exclude": ["dist", "node_modules", "**/*.test.ts"]
 }

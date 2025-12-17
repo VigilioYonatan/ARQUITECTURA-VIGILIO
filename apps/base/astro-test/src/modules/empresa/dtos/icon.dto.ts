@@ -1,18 +1,18 @@
-import { type Input, omit } from "@vigilio/valibot";
+import { z } from "zod";
 import { iconSchema } from "../schemas/icon.schema";
 
-export const iconStoreDto = omit(iconSchema, [
-    "id",
-    "code",
-    "created_at",
-    "updated_at",
-]);
-export type IconStoreDto = Input<typeof iconStoreDto>;
+export const iconStoreDto = iconSchema.omit({
+    id: true,
+    code: true,
+    created_at: true,
+    updated_at: true,
+});
+export type IconStoreDto = z.infer<typeof iconStoreDto>;
 
-export const iconUpdateDto = omit(iconSchema, [
-    "id",
-    "code",
-    "created_at",
-    "updated_at",
-]);
-export type IconUpdateDto = Input<typeof iconUpdateDto>;
+export const iconUpdateDto = iconSchema.omit({
+    id: true,
+    code: true,
+    created_at: true,
+    updated_at: true,
+});
+export type IconUpdateDto = z.infer<typeof iconUpdateDto>;

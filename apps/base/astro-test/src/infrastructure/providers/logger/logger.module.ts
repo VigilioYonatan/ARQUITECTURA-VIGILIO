@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { Enviroments } from "@infrastructure/config/server/environments.config";
+import type { Environments } from "@infrastructure/config/server/environments.config";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { LoggerModule } from "nestjs-pino";
@@ -9,7 +9,7 @@ import { LoggerModule } from "nestjs-pino";
         LoggerModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: (config: ConfigService<Enviroments>) => {
+            useFactory: (config: ConfigService<Environments>) => {
                 const isProduction = config.get("NODE_ENV") === "production";
                 return {
                     pinoHttp: {

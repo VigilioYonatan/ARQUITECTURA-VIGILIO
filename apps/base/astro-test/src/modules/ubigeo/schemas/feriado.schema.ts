@@ -1,15 +1,8 @@
-import {
-	type Input,
-	coerce,
-	date,
-	number,
-	object,
-	string,
-} from "@vigilio/valibot";
+import { z } from "@infrastructure/config/zod-i18n.config";
 
-export const feriadoSchema = object({
-	id: number(),
-	name: string(),
-	date: coerce(date(), (value) => new Date(value as string)),
+export const feriadoSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    date: z.date(),
 });
-export type FeriadoSchema = Input<typeof feriadoSchema>;
+export type FeriadoSchema = z.infer<typeof feriadoSchema>;

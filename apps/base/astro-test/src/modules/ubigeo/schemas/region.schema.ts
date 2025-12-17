@@ -1,11 +1,10 @@
-import { number, object, string, type Input } from "@vigilio/valibot";
+import { z } from "@infrastructure/config/zod-i18n.config";
 
-export const regionSchema = object({
-    id: number(),
-    code: string(),
-    name: string(),
-    country_id: number(),
+export const regionSchema = z.object({
+    id: z.number(),
+    code: z.string(),
+    name: z.string(),
+    country_id: z.number(),
 });
 
-export type RegionSchema = Input<typeof regionSchema>;
-
+export type RegionSchema = z.infer<typeof regionSchema>;

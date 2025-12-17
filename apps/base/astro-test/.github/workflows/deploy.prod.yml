@@ -1,0 +1,105 @@
+name: Deploy Production
+
+on:
+    workflow_dispatch:
+        inputs:
+            confirm_deploy:
+                description: "Type 'DEPLOY' to confirm production deployment"
+                required: true
+                default: ""
+            reason:
+                description: "Reason for deployment (Release notes/Ticket ID)"
+                required: true
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    validate_input:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Validate Confirmation
+              run: |
+                  if [ "${{ github.event.inputs.confirm_deploy }}" != "DEPLOY" ]; then
+                    echo "❌ Deployment not confirmed correctly. Type 'DEPLOY'."
+                    exit 1
+                  fi
+                  echo "✅ Deployment confirmed for reason: ${{ github.event.inputs.reason }}"
+
+    test_and_build:
+        name: 🧪 Quality Gate
+        needs: validate_input
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  cache: "pnpm"
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Lint Strict
+              run: pnpm run biome:check
+
+            - name: Unit Tests
+              run: pnpm test -- --run
+
+            # - name: E2E Tests
+            #   run: pnpm test:e2e
+
+            - name: Build Application
+              run: pnpm run build:serve
+
+    deploy:
+        name: 🚀 Deploy to Production
+        needs: test_and_build
+        runs-on: ubuntu-latest
+        environment: production
+        steps:
+            - name: 🚀 Inject Secrets & Deploy
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SERVER_IP }}
+                  username: ${{ secrets.SERVER_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  port: ${{ secrets.SSH_PORT }} # Optional, defaults to 22
+                  script: |
+                      # ⚠️ VERIFICA QUE ESTA RUTA SEA CORRECTA EN TU SERVIDOR
+                      cd /home/dokploy/app/my-app-prod
+
+                      # Inyectar variables desde GitHub Secrets
+                      echo "${{ secrets.PROD_ENV_FILE }}" > .env
+
+                      # Desplegar
+                      docker compose up -d --build
+
+    notify:
+        name: 📢 Notify Discord
+        needs: [deploy]
+        if: always()
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Discord Notification
+              env:
+                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+                  STATUS: ${{ needs.deploy.result }}
+                  REASON: ${{ github.event.inputs.reason }}
+              run: |
+                  if [ "$STATUS" == "success" ]; then
+                    COLOR=3066993 # Green
+                    TITLE="🚀 PROD DEPLOY EXITOSO"
+                  else
+                    COLOR=15158332 # Red
+                    TITLE="❌ PROD DEPLOY FALLIDO"
+                  fi
+
+                  curl -H "Content-Type: application/json" \
+                  -d "{\"embeds\": [{\"title\": \"$TITLE\", \"description\": \"**Reason:** $REASON\n**Commit:** $(git log -1 --pretty=%B)\", \"color\": $COLOR}]}" \
+                  $DISCORD_WEBHOOK

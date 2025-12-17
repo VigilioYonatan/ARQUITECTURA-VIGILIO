@@ -177,10 +177,8 @@ export function useSmartUpload() {
     // =========================================================================
     const deleteFile = async (key: string) => {
         try {
-            const res = await fetch("/api/v1/upload/delete", {
-                method: "POST",
-                body: JSON.stringify({ key }),
-                headers: { "Content-Type": "application/json" },
+            const res = await fetch(`/api/v1/upload/delete/${key}`, {
+                method: "DELETE",
             });
             if (!res.ok) {
                 // biome-ignore lint/suspicious/noConsole: <explanation>

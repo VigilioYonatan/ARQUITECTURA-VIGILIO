@@ -1,17 +1,14 @@
-import { DRIZZLE } from "@infrastructure/providers/database/database.module";
-import { schema } from "@infrastructure/providers/database/database.schema";
-import type { UserAuth } from "@modules/user/schemas/user.schema";
+import type { UserAuth } from "@modules/users/schemas/user.schema";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Inject, Injectable } from "@nestjs/common";
-import { eq } from "drizzle-orm";
-import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type { EmpresaUpdateDto } from "../dtos/empresa.dto";
+import { EmpresaRepository } from "../repositories/empresa.repository";
 import type { EmpresaSchemaFromServer } from "../schemas/empresa.schema";
 
 @Injectable()
 export class EmpresaService {
     constructor(
-        @Inject(DRIZZLE) private readonly db: NodePgDatabase<typeof schema>,
+        private readonly empresaRepository: EmpresaRepository,
         @Inject(CACHE_MANAGER) private readonly cache: Cache
     ) {}
 
@@ -20,12 +17,7 @@ export class EmpresaService {
         empresa: EmpresaSchemaFromServer,
         body: EmpresaUpdateDto
     ) {
-        await this.db
-            .update(schema.empresa)
-            .set({
-                ...body,
-            })
-            .where(eq(schema.empresa.id, empresa.id));
+        await this.empresaRepository.update(empresa.id, user.id, body);
 
         await this.cache.delete("empresa");
         return {

@@ -1,6 +1,6 @@
 import {
-    animationFadeInTailwind,
-    cn,
+	animationFadeInTailwind,
+	cn,
 } from "@infrastructure/libs/client/helpers";
 import { useContext } from "preact/hooks";
 import type { JSX } from "preact/jsx-runtime";
@@ -8,77 +8,77 @@ import Card from "../extras/card";
 import { TableContext, VigilioTableContext } from "./VigilioTable";
 
 interface TableProps {
-    className?: string;
-    children: JSX.Element | JSX.Element[];
-    minHeight?: string;
+	className?: string;
+	children: JSX.Element | JSX.Element[];
+	minHeight?: string;
 }
 
 function Table({
-    className = "text-sm text-left  w-full",
-    children,
-    minHeight = "0px",
+	className = "text-sm text-left  w-full",
+	children,
+	minHeight = "0px",
 }: TableProps) {
-    const table = useContext(VigilioTableContext);
-    if (table.query.isSuccess) {
-        return (
-            <Card
-                className={cn(
-                    "w-full opacity-0 overflow-x-auto! rounded-none! rounded-t-xl!",
-                    animationFadeInTailwind
-                )}
-                style={{ minHeight }}
-            >
-                <table className={className}>{children}</table>
-            </Card>
-        );
-    }
-    return <TableLoading table={table} />;
+	const table = useContext(VigilioTableContext);
+	if (table.query.isSuccess) {
+		return (
+			<Card
+				className={cn(
+					"w-full opacity-0 overflow-x-auto! rounded-none! rounded-t-xl!",
+					animationFadeInTailwind,
+				)}
+				style={{ minHeight }}
+			>
+				<table className={className}>{children}</table>
+			</Card>
+		);
+	}
+	return <TableLoading table={table} />;
 }
 interface TableLoadingProps<
-    T extends object,
-    K extends string,
-    Y extends object
+	T extends object,
+	K extends string,
+	Y extends object,
 > {
-    table: TableContext<T, K, Y>;
+	table: TableContext<T, K, Y>;
 }
 export function TableLoading<
-    T extends object,
-    K extends string,
-    Y extends object
+	T extends object,
+	K extends string,
+	Y extends object,
 >({ table }: TableLoadingProps<T, K, Y>) {
-    return (
-        <Card className="w-full ">
-            <div class=" animate-pulse flex flex-col gap-6 w-full ">
-                <table class="w-full ">
-                    <thead>
-                        <tr class="border-b border-border">
-                            {Array.from({
-                                length: table.table.Thead().length,
-                            }).map((_, index) => (
-                                <th class="px-4 py-3 text-left" key={index}>
-                                    <div class="h-6 min-w-[60px] bg-card-foreground rounded" />
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Array.from({
-                            length: table.pagination.value.limit,
-                        }).map((_, index) => (
-                            <tr class="border-b border-gray-100" key={index}>
-                                {Array.from({
-                                    length: table.table.Thead().length,
-                                }).map((_, index) => (
-                                    <td class="px-4 py-4" key={index}>
-                                        <div class="h-6 min-w-[60px] bg-card-foreground rounded w-full animate-pulse" />
-                                    </td>
-                                ))}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </Card>
-    );
+	return (
+		<Card className="w-full ">
+			<div class=" animate-pulse flex flex-col gap-6 w-full ">
+				<table class="w-full ">
+					<thead>
+						<tr class="border-b border-border">
+							{Array.from({
+								length: table.table.Thead().length,
+							}).map((_, index) => (
+								<th class="px-4 py-3 text-left" key={index}>
+									<div class="h-6 min-w-[60px] bg-card-foreground rounded" />
+								</th>
+							))}
+						</tr>
+					</thead>
+					<tbody>
+						{Array.from({
+							length: table.pagination.value.limit,
+						}).map((_, index) => (
+							<tr class="border-b border-gray-100" key={index}>
+								{Array.from({
+									length: table.table.Thead().length,
+								}).map((_, index) => (
+									<td class="px-4 py-4" key={index}>
+										<div class="h-6 min-w-[60px] bg-card-foreground rounded w-full animate-pulse" />
+									</td>
+								))}
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		</Card>
+	);
 }
 export default Table;

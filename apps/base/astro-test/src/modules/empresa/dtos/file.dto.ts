@@ -1,45 +1,33 @@
-import { EXTENSIONS } from "@infrastructure/consts";
-import validFileValibot from "@infrastructure/libs/client/valibot";
-import {
-    array,
-    type Input,
-    instance,
-    merge,
-    object,
-    omit,
-    pick,
-} from "@vigilio/valibot";
+import { z } from "zod";
 import { fileSchema } from "../schemas/file.schema";
 
-export const fileStoreDto = omit(fileSchema, [
-    "id",
-    "history",
-    "user_id",
-    "created_at",
-    "updated_at",
-]);
+export const fileStoreDto = fileSchema.omit({
+    id: true,
+    history: true,
+    user_id: true,
+    created_at: true,
+    updated_at: true,
+});
 
-export type FileStoreDto = Input<typeof fileStoreDto>;
+export type FileStoreDto = z.infer<typeof fileStoreDto>;
 
-export const fileStoreClientDto = merge([
-    fileStoreDto,
-    object({
-        file: array(instance(File), "Archivos no válidos.", [
-            validFileValibot({
-                required: true,
-                min: 1,
-                max: 1,
-                types: Object.values(EXTENSIONS).flat(),
-                maxSize: 250, // 250MB
-            }),
-        ]),
-    }),
-]);
+export const fileStoreClientDto = fileStoreDto.extend({
+    file: z
+        .array(z.instanceof(File))
+        .min(1)
+        .max(1)
+        // Add custom validation logic if needed matching validFileValibot capabilities or generic Zod
+        .refine(
+            (files) => files.every((file) => file.size <= 250 * 1024 * 1024),
+            "Tamaño máximo 250MB"
+        ),
+    // .refine(files => check extensions...)
+});
 
-export type FileStoreClientDto = Input<typeof fileStoreClientDto>;
+export type FileStoreClientDto = z.infer<typeof fileStoreClientDto>;
 
-export const fileUpdateFileDto = pick(fileStoreClientDto, ["file"]);
+export const fileUpdateFileDto = fileStoreClientDto.pick({ file: true });
 
-export type FileUpdateClientDto = Input<typeof fileUpdateFileDto> & {
+export type FileUpdateClientDto = z.infer<typeof fileUpdateFileDto> & {
     name: string;
 };

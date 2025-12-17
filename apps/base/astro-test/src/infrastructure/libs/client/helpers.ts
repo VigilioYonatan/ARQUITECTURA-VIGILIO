@@ -1,5 +1,5 @@
 import useMediaQuery from "@hooks/useMediaQuery";
-import type { FilesSchema } from "@modules/uploads/modules/upload.schema";
+import type { FilesSchema } from "@modules/uploads/schemas/upload.schema";
 import { sweetAlert, sweetModal } from "@vigilio/sweet";
 import type { Path, UseFormReturn } from "react-hook-form";
 
@@ -177,10 +177,6 @@ export function formatTelephoneNumber(telephone: string) {
     return telephone.replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3");
 }
 
-export function cn(...classes: (string | undefined | null | boolean)[]) {
-    return classes.filter(Boolean).join(" ");
-}
-
 export function normalizeString(str: string) {
     return str
         .normalize("NFD") // Descompone los caracteres acentuados en su forma base + acento
@@ -299,3 +295,7 @@ export const animationFadeInTailwind =
 
 //     return `Solo se puede subir archivos de tipo ${mimeText}`;
 // }
+
+export function cn(...classes: (string | undefined | null | boolean)[]) {
+    return classes.filter(Boolean).join(" ");
+}

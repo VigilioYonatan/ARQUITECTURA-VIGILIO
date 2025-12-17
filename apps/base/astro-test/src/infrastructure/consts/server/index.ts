@@ -1,6 +1,6 @@
-import enviroments from "@infrastructure/config/server/environments.config";
+import environments from "@infrastructure/config/server/environments.config";
 
-export const BASE_URL = () => enviroments().PUBLIC_URL;
+export const BASE_URL = () => environments().PUBLIC_URL;
 
 /** entities  */
 export type UploadEntities = "user" | "file";

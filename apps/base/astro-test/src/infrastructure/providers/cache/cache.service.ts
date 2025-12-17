@@ -101,4 +101,16 @@ export class CacheService {
 
         return foundId;
     }
+    // --- HEALTH CHECK ---
+    async checkHealth(): Promise<boolean> {
+        try {
+            await this.cache.set("health_check", "ok", 1000);
+            const result = await this.cache.get("health_check");
+            return result === "ok";
+        } catch (error) {
+            // biome-ignore lint/suspicious/noConsole: Health check log
+            console.error("Redis Health Check Failed:", error);
+            return false;
+        }
+    }
 }

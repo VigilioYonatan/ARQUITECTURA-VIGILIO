@@ -1,11 +1,11 @@
 import { AppConfigModule } from "@infrastructure/modules/config.module";
-import { MinioModule } from "@infrastructure/providers/storage/minio.module";
+import { RustFSModule } from "@infrastructure/providers/storage/rustfs.module";
 import { Module } from "@nestjs/common";
-import { UploadController } from "./upload.controller";
-import { UploadService } from "./upload.service";
+import { UploadController } from "../controllers/upload.controller";
+import { UploadService } from "../services/upload.service";
 
 @Module({
-    imports: [MinioModule, AppConfigModule],
+    imports: [AppConfigModule, RustFSModule],
     controllers: [UploadController],
     providers: [UploadService],
 })

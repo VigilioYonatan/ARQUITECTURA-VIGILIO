@@ -74,7 +74,12 @@ export default defineConfig({
         // Simula un navegador (DOM) para que funcionen los componentes de React/Preact
         environment: "jsdom",
         // Archivo de configuración inicial (opcional, pero recomendado)
-        setupFiles: ["./src/infrastructure/config/server/setup-test.ts"],
+        setupFiles: [
+            path.resolve(
+                __dirname,
+                "./src/infrastructure/config/server/setup-test.ts"
+            ),
+        ],
         globals: true, // Permite usar describe, it, expect sin importar
         pool: "forks", // Necesario para que esbuild/astro funcionen bien
     },

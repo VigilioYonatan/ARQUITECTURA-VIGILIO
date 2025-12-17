@@ -1,4 +1,4 @@
-import enviroments from "@infrastructure/config/server/environments.config";
+import environments from "@infrastructure/config/server/environments.config";
 import { UbigeoSeeder } from "@modules/ubigeo/seeder/ubigeo.seeder";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
@@ -10,7 +10,7 @@ import { SeederService } from "./seeder.service";
         // Importamos ConfigModule para que DatabaseModule funcione
         ConfigModule.forRoot({
             isGlobal: true,
-            load: [enviroments],
+            load: [environments],
             envFilePath: [".env"],
             cache: true, // Mejora performance leyendo process.env una sola vez
             expandVariables: true,

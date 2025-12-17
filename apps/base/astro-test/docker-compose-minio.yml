@@ -1,7 +1,7 @@
 services:
   minio:
     image: minio/minio:latest
-    container_name: minio_s3
+    container_name: RUSTFS_s3
     restart: unless-stopped
     ports:
       # Puerto API (Interno y Externo)
@@ -10,10 +10,10 @@ services:
       - "9001:9001"
     environment:
       # Usamos variables por defecto o las que pongas en tu .env
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-root}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-password123}
+      RUSTFS_ROOT_USER: ${RUSTFS_ROOT_USER:-root}
+      RUSTFS_ROOT_PASSWORD: ${RUSTFS_ROOT_PASSWORD:-password123}
     volumes:
-      - minio_data:/data
+      - RUSTFS_data:/data
     command: server /data --console-address ":9001"
     labels:
       - "traefik.enable=true"
@@ -82,7 +82,7 @@ services:
       /bin/sh -c "
       echo 'Esperando a MinIO...'
       # Bucle: Intenta conectar cada 2 segundos hasta que funcione
-      until /usr/bin/mc alias set myminio http://minio:9000 ${MINIO_ROOT_USER:-root} ${MINIO_ROOT_PASSWORD:-password123}; do
+      until /usr/bin/mc alias set myminio http://minio:9000 ${RUSTFS_ROOT_USER:-root} ${RUSTFS_ROOT_PASSWORD:-password123}; do
         echo 'MinIO no está listo, reintentando en 2s...'
         sleep 2
       done;
@@ -101,7 +101,7 @@ services:
       - dokploy-network
 
 volumes:
-  minio_data: # Docker gestionará esto automáticamente
+  RUSTFS_data: # Docker gestionará esto automáticamente
 
 networks:
   dokploy-network:

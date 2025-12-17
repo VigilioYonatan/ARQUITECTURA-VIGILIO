@@ -5,9 +5,11 @@ import { AppConfigModule } from "@infrastructure/modules/config.module";
 import { AppCacheModule } from "@infrastructure/providers/cache/cache.module";
 import { DatabaseModule } from "@infrastructure/providers/database/database.module";
 import { AppLoggerModule } from "@infrastructure/providers/logger/logger.module";
+import { AuthModule } from "@modules/auth/auth.module";
+import { HealthModule } from "@modules/health/health.module";
 import { UbigeoModule } from "@modules/ubigeo/modules/ubigeo.module";
 import { UploadModule } from "@modules/uploads/modules/upload.module";
-import { UserModule } from "@modules/user/modules/user.module";
+import { UserModule } from "@modules/users/modules/user.module";
 import {
     type MiddlewareConsumer,
     Module,
@@ -34,6 +36,8 @@ import { WebModule } from "./modules/web/web.module";
         UbigeoModule,
         UploadModule,
         WebModule,
+        AuthModule,
+        HealthModule,
     ],
     providers: [
         { provide: APP_FILTER, useClass: DrizzleExceptionFilter },

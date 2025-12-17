@@ -1,10 +1,10 @@
 // ../entities/icon.schema.ts
 
 import type { Entity } from "@infrastructure/types/server";
+import type { FilesSchema } from "@modules/uploads/schemas/upload.schema";
 import { type InferSelectModel } from "drizzle-orm";
-import { jsonb, pgTable, serial, text } from "drizzle-orm/pg-core";
+import { jsonb, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 import type { IconSchema } from "../schemas/icon.schema";
-import type { FilesSchema } from "@modules/uploads/modules/upload.schema";
 
 export const iconEntity = pgTable("icons", {
     id: serial().primaryKey(),
@@ -13,6 +13,8 @@ export const iconEntity = pgTable("icons", {
     icon: text(),
     slug: text().notNull(),
     photo: jsonb().$type<FilesSchema[]>().notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
 export type IconEntity = Entity<
     IconSchema,

@@ -1,5 +1,6 @@
 // helpers para cliente y servidor (Server)
-import { coerce, date, object, optional } from "@vigilio/valibot";
+
+import { z } from "@infrastructure/config/zod-i18n.config";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import type { EmpresaSchemaFromServer } from "@modules/empresa/schemas/empresa.schema";
@@ -175,9 +176,9 @@ export const POSIVES_NUMERIC_REGEX = /^\d+$/;
  * Valida un objeto con timestamps
  * @param timestamps El objeto con timestamps a validar
  */
-export const timestampsObject = object({
-    created_at: optional(coerce(date(), (value) => new Date(value as string))),
-    updated_at: optional(coerce(date(), (value) => new Date(value as string))),
+export const timestampsObject = z.object({
+    created_at: z.date().optional(),
+    updated_at: z.date().optional(),
 });
 
 /**

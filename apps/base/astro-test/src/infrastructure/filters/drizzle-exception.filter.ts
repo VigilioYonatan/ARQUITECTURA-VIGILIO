@@ -1,4 +1,4 @@
-import enviroments from "@infrastructure/config/server/environments.config";
+import environments from "@infrastructure/config/server/environments.config";
 import { now } from "@infrastructure/libs";
 import { type ArgumentsHost, Catch, HttpStatus, Logger } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
@@ -124,7 +124,7 @@ export class DrizzleExceptionFilter extends BaseExceptionFilter {
         };
 
         // En Desarrollo agregamos detalles técnicos extra
-        if (enviroments().NODE_ENV === "development") {
+        if (environments().NODE_ENV === "development") {
             result = {
                 ...result,
                 path: ctx.getRequest().url,

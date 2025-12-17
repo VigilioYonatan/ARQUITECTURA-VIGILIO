@@ -465,7 +465,6 @@ export async function bulkCreateWithNestedRelations<
         // Iterar sobre cada padre para extraer sus hijos
         for (const [parentIndex, parentData] of currentParentsData.entries()) {
             const parentResult = currentParentsResults[parentIndex];
-            // @ts-ignore - Acceso dinámico seguro por lógica de negocio
             const children =
                 (parentData[relation.childrenField] as any[]) || [];
 

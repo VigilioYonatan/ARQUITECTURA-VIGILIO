@@ -1,34 +1,28 @@
-import { COLOR_REGEX, timestampsObject } from "@infrastructure/libs";
-import {
-    boolean,
-    type Input,
-    maxLength,
-    minLength,
-    number,
-    object,
-    regex,
-    string,
-} from "@vigilio/valibot";
+import { z } from "@infrastructure/config/zod-i18n.config";
+import { COLOR_REGEX } from "@infrastructure/libs";
+import type { UserCreated } from "@modules/users";
 
-export const empresaSchema = object({
-    id: number(),
-    name_empresa: string([minLength(3), maxLength(200)]),
-    dial_code: string(),
-    model_ai_groq: string([minLength(3), maxLength(100)]),
-    token_ai: string([minLength(4)]),
-    color_primary: string([regex(COLOR_REGEX)]),
-    timezone: string([minLength(3), maxLength(100)]),
-    enabled_automatic_payment: boolean(),
-    enabled_send_sunat: boolean(),
-    enabled_send_pdf: boolean(),
-    telefono: string([minLength(9), maxLength(9)]),
-    address_id: number(),
-    user_id: number("Esta campo es obligatorio."),
-    ...timestampsObject.entries,
+export const empresaSchema = z.object({
+    id: z.number(),
+    name_empresa: z.string().min(3).max(200),
+    dial_code: z.string(),
+    model_ai_groq: z.string().min(3).max(100),
+    token_ai: z.string().min(4),
+    color_primary: z.string().regex(COLOR_REGEX),
+    timezone: z.string().min(3).max(100),
+    enabled_automatic_payment: z.boolean(),
+    enabled_send_sunat: z.boolean(),
+    enabled_send_pdf: z.boolean(),
+    telefono: z.string().min(9).max(9),
+    address_id: z.number(),
+    user_id: z.number(),
+    created_at: z.date(),
+    updated_at: z.date(),
 });
-export type EmpresaSchema = Input<typeof empresaSchema>;
+export type EmpresaSchema = z.infer<typeof empresaSchema>;
+
 export type EmpresaSchemaFromServer = EmpresaSchema & {
-    // user: UserCreated;
+    user: UserCreated;
     // company: CompanySchema;
     // address: AddressSchemaFromServer;
 };

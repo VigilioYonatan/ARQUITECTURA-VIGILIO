@@ -1,19 +1,19 @@
+import FilterSystem from "../extras/filter-system";
+import Footer from "./Footer";
+import Header from "./Header";
+import Limit from "./Limit";
+import Paginator from "./Paginator";
+import Refetch from "./Refetch";
+import Show from "./Show";
 import Table from "./Table";
-import Tools from "./Tools";
 import Tbody from "./Tbody";
 import TbodyRow from "./TbodyRow";
 import Td from "./Td";
 import Th from "./Th";
 import Thead from "./Thead";
 import TheadRow from "./TheadRow";
+import Tools from "./Tools";
 import V from "./VigilioTable";
-import Paginator from "./Paginator";
-import Footer from "./Footer";
-import Show from "./Show";
-import Header from "./Header";
-import Limit from "./Limit";
-import Refetch from "./Refetch";
-import FilterSystem from "../extras/filter-system";
 
 const VigilioTable = Object.assign(V, {
 	header: Object.assign(Header, {

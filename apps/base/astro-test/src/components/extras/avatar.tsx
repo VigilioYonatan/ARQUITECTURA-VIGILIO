@@ -1,6 +1,6 @@
 import { printFileWithDimension } from "@infrastructure/libs";
 import { cn } from "@infrastructure/libs/client/helpers";
-import type { FilesSchema } from "@modules/uploads/modules/upload.schema";
+import type { FilesSchema } from "@modules/uploads/schemas/upload.schema";
 
 type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl";
 type AvatarStatus = "online" | "offline" | "away" | "busy";

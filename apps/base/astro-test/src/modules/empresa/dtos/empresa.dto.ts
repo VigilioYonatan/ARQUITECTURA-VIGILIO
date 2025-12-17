@@ -1,34 +1,23 @@
-import validFileValibot from "@infrastructure/libs/client/valibot";
-import { array, type Input, instance, object, omit } from "@vigilio/valibot";
+// import validFileValibot from "@infrastructure/libs/client/valibot";
+import { z } from "zod";
 import { empresaSchema } from "../schemas/empresa.schema";
-export const empresaUpdateDto = omit(empresaSchema, [
-    "id",
-    "user_id",
-    "created_at",
-    "updated_at",
-]);
-export type EmpresaUpdateDto = Input<typeof empresaUpdateDto>;
 
-export const empresaUpdateLogoDto = object({
-    logo: array(instance(File), "Archivos no válidos.", [
-        validFileValibot({
-            required: false,
-            min: 1,
-            max: 1,
-        }),
-    ]),
+export const empresaUpdateDto = empresaSchema.omit({
+    id: true,
+    user_id: true,
+    created_at: true,
+    updated_at: true,
 });
-export type EmpresaUpdateLogoDto = Input<typeof empresaUpdateLogoDto>;
+export type EmpresaUpdateDto = z.infer<typeof empresaUpdateDto>;
 
-export const empresaUpdateLogoLoadingDto = object({
-    logo_loading: array(instance(File), "Archivos no válidos.", [
-        validFileValibot({
-            required: false,
-            min: 1,
-            max: 1,
-        }),
-    ]),
+export const empresaUpdateLogoDto = z.object({
+    logo: z.array(z.instanceof(File)).min(1).max(1),
 });
-export type EmpresaUpdateLogoLoadingDto = Input<
+export type EmpresaUpdateLogoDto = z.infer<typeof empresaUpdateLogoDto>;
+
+export const empresaUpdateLogoLoadingDto = z.object({
+    logo_loading: z.array(z.instanceof(File)).min(1).max(1),
+});
+export type EmpresaUpdateLogoLoadingDto = z.infer<
     typeof empresaUpdateLogoLoadingDto
 >;

@@ -1,44 +1,55 @@
-version: "3.8"
-
 services:
   registry:
-    image: registry:2
-    deploy:
-      mode: replicated
-      replicas: 1
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.registry.rule=Host(`registry.tudominio.com`)"
-        - "traefik.http.routers.registry.entrypoints=websecure"
-        - "traefik.http.routers.registry.tls.certresolver=letsencrypt"
-        - "traefik.http.services.registry.loadbalancer.server.port=5000"
+    image: registry:3
+    ports:
+      - "5000:5000"
     environment:
-      # Configuración General
+      # --- Red y Proxy ---
       REGISTRY_HTTP_ADDR: 0.0.0.0:5000
       REGISTRY_HTTP_SECRET: ${REGISTRY_HTTP_SECRET}
+      REGISTRY_HTTP_RELATIVEURLS: "true"
 
-      # Autenticación (htpasswd)
+      # --- Autenticación (Se mantiene el secret) ---
       REGISTRY_AUTH: htpasswd
-      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+      REGISTRY_AUTH_HTPASSWD_REALM: "Registry Realm"
       REGISTRY_AUTH_HTPASSWD_PATH: /run/secrets/registry_auth
 
-      # Almacenamiento en MinIO (S3)
+      # --- Almacenamiento S3 RustFS (Variables dinámicas restauradas) ---
       REGISTRY_STORAGE: s3
+      REGISTRY_STORAGE_S3_ACCESSKEY: ${RUSTFS_ACCESS_KEY}
+      REGISTRY_STORAGE_S3_SECRETKEY: ${RUSTFS_SECRET_KEY}
       REGISTRY_STORAGE_S3_REGION: us-east-1
       REGISTRY_STORAGE_S3_BUCKET: docker-registry
-      REGISTRY_STORAGE_S3_ACCESSKEY: ${MINIO_ACCESS_KEY}
-      REGISTRY_STORAGE_S3_SECRETKEY: ${MINIO_SECRET_KEY}
-      REGISTRY_STORAGE_S3_REGIONENDPOINT: http://minio:9000
-      REGISTRY_STORAGE_S3_ENCRYPT: "false"
-      REGISTRY_STORAGE_S3_SECURE: "false"
-      REGISTRY_STORAGE_S3_V4AUTH: "true"
+      REGISTRY_STORAGE_S3_REGIONENDPOINT: http://rustfs_rustfs:9000
+      REGISTRY_STORAGE_S3_FORCEPATHSTYLE: "true"
       REGISTRY_STORAGE_S3_CHUNKSIZE: 5242880
-      REGISTRY_STORAGE_DELETE_ENABLED: "true" # Permitir borrar imágenes
+      REGISTRY_STORAGE_S3_LOGLEVEL: debug
+      REGISTRY_STORAGE_S3_MULTIPARTCOPYCHUNKSIZE: 33554432
+      REGISTRY_STORAGE_S3_MULTIPARTCOPYTHRESHOLDSIZE: 33554432
+      REGISTRY_STORAGE_S3_SECURE: "false"
+      REGISTRY_STORAGE_S3_SKIPVERIFY: "true"
+      REGISTRY_STORAGE_REDIRECT_DISABLE: "true"
 
+      OTEL_TRACES_EXPORTER: none
     secrets:
       - registry_auth
+
     networks:
       - dokploy-network
+
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.registry-stack.rule=Host(`registry-3.duckdns.org`)"
+        - "traefik.http.routers.registry-stack.entrypoints=websecure"
+        - "traefik.http.routers.registry-stack.tls.certresolver=letsencrypt"
+        - "traefik.http.services.registry-stack.loadbalancer.server.port=5000"
+        - "traefik.docker.network=dokploy-network"
+        - "traefik.http.middlewares.registry-limit.buffering.maxRequestBodyBytes=0"
+        - "traefik.http.routers.registry-stack.middlewares=registry-limit"
 
 networks:
   dokploy-network:
@@ -46,4 +57,30 @@ networks:
 
 secrets:
   registry_auth:
-    file: ./auth/htpasswd
+    external: true
+# docker stack deploy -c docker-compose.yml registry
+
+# crear secret #!!!importante poner tu usuario donde dice vigilio
+# mkdir auth
+# docker run --entrypoint htpasswd httpd:alpine -Bbn vigilio password > ./auth/htpasswd
+# docker secret create registry_auth ./auth/htpasswd
+
+# crear el .env
+# export RUSTFS_ACCESS_KEY="tu_usuario_rustfs"
+# export RUSTFS_SECRET_KEY="tu_password_rustfs"
+# export REGISTRY_HTTP_SECRET=$(openssl rand -hex 32)
+
+# docker stack deploy -c registry-stack.yml registry
+
+# docker stack deploy -c docker-compose.yml registry
+#Creating service registry_registry esperas unos segundos
+
+# usar un dominio gratis
+# DuckDNS - te logeas con google,check no soy robot, tienes un subdominio gratuito
+# recuerda pponer el ip de tu serviudor en los dominios de duckdns
+# https://www.duckdns.org/
+# probar dominio en https://dnschecker.org/
+
+# docker service ls
+# docker service ps registry_registry
+# docker logs -f dokploy-traefik #

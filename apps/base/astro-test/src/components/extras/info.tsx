@@ -1,6 +1,6 @@
 import { formatFileSize } from "@infrastructure/libs";
 import { sizeIcon } from "@infrastructure/libs/client/helpers";
-import type { FilesSchema } from "@modules/uploads/modules/upload.schema";
+import type { FilesSchema } from "@modules/uploads/schemas/upload.schema";
 import { DownloadIconSolid } from "@vigilio/react-icons";
 import type { JSX } from "preact/jsx-runtime";
 import { Badge } from "./badge";

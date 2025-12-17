@@ -1,19 +1,19 @@
 import Form from "@components/form";
-import { type Input, number, object, string } from "@vigilio/valibot";
-import { valibotResolver } from "@vigilio/valibot/resolver";
-import type { JSX } from "preact";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { type JSX } from "preact";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-const a = object({
-    name: string(),
-    age: number(),
+const a = z.object({
+    name: z.string(),
+    age: z.number(),
 });
-type A = Input<typeof a>;
+type A = z.infer<typeof a>;
 interface CampusLayoutProps {
     children: JSX.Element | JSX.Element[];
 }
 function DashboardLayout({ children }: CampusLayoutProps) {
-    const form = useForm<A>({ resolver: valibotResolver(a) });
+    const form = useForm<A>({ resolver: zodResolver(a) });
     function onSubmit(data: A) {
         console.log(data);
     }

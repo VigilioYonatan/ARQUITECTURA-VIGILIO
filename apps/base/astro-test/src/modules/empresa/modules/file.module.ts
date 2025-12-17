@@ -1,11 +1,12 @@
-import { MinioService } from "@infrastructure/providers/storage/minio.service";
+import { RustFSModule } from "@infrastructure/providers/storage/rustfs.module";
 import { Module } from "@nestjs/common";
+import { FileRepository } from "../repositories/file.repository";
 import { FileService } from "../services/file.service";
 
 @Module({
-    imports: [MinioService],
+    imports: [RustFSModule],
     controllers: [],
-    providers: [FileService],
+    providers: [FileService, FileRepository],
     exports: [],
 })
 export class FileModule {}

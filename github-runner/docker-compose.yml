@@ -1,39 +1,31 @@
-version: "3.8"
-
 services:
-  runner:
-    image: myoung34/github-runner:latest
+  github-runner:
+    # image: myoung34/github-runner:latest
+    image: myoung34/github-runner:ubuntu-bionic # mas ligero
+    container_name: github-runner
+    restart: always
     environment:
-      # Configuración Obligatoria
-      REPO_URL: https://github.com/tu-usuario/tu-repo
-      ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
+      # 1. La URL de tu repositorio o de tu organización
+      - REPO_URL=https://github.com/Vigilio-Services
 
-      # Etiquetas para identificar este runner en tu workflow
-      RUNNER_NAME: swarm-runner
-      LABELS: swarm,production,docker
+      - RUNNER_SCOPE=org
+      # 2. Token de autenticación (ver paso abajo para obtenerlo)
+      - RUNNER_TOKEN=${GITHUB_ACCESS_TOKEN}
 
-      # Mantener el runner vivo después de terminar un trabajo
-      EPHEMERAL: "false"
+      # 3. Nombre opcional para identificarlo en GitHub
+      - RUNNER_NAME=mi-servidor-runner
 
-    deploy:
-      mode: replicated
-      replicas: 1
-      resources:
-        limits:
-          # Protegemos el cluster limitando el consumo
-          cpus: "2"
-          memory: 2G
-        reservations:
-          cpus: "0.5"
-          memory: 512M
-
-    # Necesario para que el runner pueda ejecutar comandos de Docker (construir imágenes)
+      # 4. Etiquetas para filtrar qué jobs corren aquí
+      - LABELS=self-hosted,node,linux,docker
+     # Esta opción limpia el código del repo tras cada job para ahorrar espacio
+      - EPHEMERAL=false
     volumes:
+      # Esto permite que el runner use el Docker de tu servidor
       - /var/run/docker.sock:/var/run/docker.sock
-
-    networks:
-      - dokploy-network
-
-networks:
-  dokploy-network:
-    external: true
+      # Directorio de trabajo del runner
+      - runner_data:/_work
+      # temporal
+      - runner_tool_cache:/opt/hostedtoolcache
+volumes:
+  runner_data:
+  runner_tool_cache:

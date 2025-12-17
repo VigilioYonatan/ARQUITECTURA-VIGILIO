@@ -1,0 +1,67 @@
+version: "3.8"
+
+x-rustfs-common: &rustfs-common
+  image: rustfs/rustfs:1.0.0-alpha.48
+  networks:
+    - rustfs-net
+    - dokploy-network
+  environment:
+    # IMPORTANTE: Aquí listamos todos los nodos para que se encuentren
+    RUSTFS_VOLUMES: "http://rustfs{1...4}/data" 
+    RUSTFS_ADDRESS: "0.0.0.0:9000"
+    RUSTFS_CONSOLE_ENABLE: "true"
+    RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY}
+    RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY}
+    RUSTFS_LOG_LEVEL: "info"
+  deploy:
+    replicas: 1
+    restart_policy:
+      condition: on-failure
+
+services:
+  rustfs1:
+    <<: *rustfs-common
+    hostname: rustfs1
+    volumes:
+      - /mnt/disk1:/data
+    deploy:
+      placement:
+        constraints:
+          - node.labels.rustfs-node == 1
+
+  rustfs2:
+    <<: *rustfs-common
+    hostname: rustfs2
+    volumes:
+      - /mnt/disk1:/data
+    deploy:
+      placement:
+        constraints:
+          - node.labels.rustfs-node == 2
+
+  rustfs3:
+    <<: *rustfs-common
+    hostname: rustfs3
+    volumes:
+      - /mnt/disk1:/data
+    deploy:
+      placement:
+        constraints:
+          - node.labels.rustfs-node == 3
+
+  rustfs4:
+    <<: *rustfs-common
+    hostname: rustfs4
+    volumes:
+      - /mnt/disk1:/data
+    deploy:
+      placement:
+        constraints:
+          - node.labels.rustfs-node == 4
+
+networks:
+  rustfs-net:
+    driver: overlay
+    attachable: true
+  dokploy-network:
+    external: true

@@ -1,10 +1,10 @@
 import path from "node:path";
-import enviroments from "@infrastructure/config/server/environments.config";
+import environments from "@infrastructure/config/server/environments.config";
 import type { NextFunction, Request, Response } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
 export const astroProxy = createProxyMiddleware({
-    target: `http://localhost:${enviroments().PUBLIC_PORT}`, // Tu Astro dev server
+    target: `http://localhost:${environments().PUBLIC_PORT}`, // Tu Astro dev server
     changeOrigin: true,
     ws: true, // Importante: WebSockets activados
     selfHandleResponse: false,

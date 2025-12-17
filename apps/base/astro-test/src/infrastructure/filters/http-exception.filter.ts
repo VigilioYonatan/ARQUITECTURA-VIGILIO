@@ -1,4 +1,4 @@
-import enviroments from "@infrastructure/config/server/environments.config";
+import environments from "@infrastructure/config/server/environments.config";
 import { now } from "@infrastructure/libs";
 import { astroRender } from "@infrastructure/libs/server/astro-proxy";
 import {
@@ -33,7 +33,7 @@ export class HttpExceptionFilter extends BaseExceptionFilter {
                     : { message: "Internal server error" }),
             };
 
-            if (enviroments().NODE_ENV === "development") {
+            if (environments().NODE_ENV === "development") {
                 result = {
                     path: request.url,
                     timestamp: now(),

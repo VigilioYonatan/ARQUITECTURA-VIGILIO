@@ -1,9 +1,9 @@
-import { number, object, string, type Input } from "@vigilio/valibot";
+import { z } from "@infrastructure/config/zod-i18n.config";
 
-export const citySchema = object({
-	id: number(),
-	code: string(),
-	name: string(),
-	region_id: number(),
+export const citySchema = z.object({
+    id: z.number(),
+    code: z.string(),
+    name: z.string(),
+    region_id: z.number(),
 });
-export type CitySchema = Input<typeof citySchema>;
+export type CitySchema = z.infer<typeof citySchema>;

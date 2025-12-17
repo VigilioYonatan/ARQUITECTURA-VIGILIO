@@ -15,6 +15,7 @@ export class InitialCacheMiddleware implements NestMiddleware {
         const empresa = await this.db.query.empresa.findFirst({
             where: eq(schema.empresa.id, 1),
         });
+        console.log("empresa", empresa);
 
         req.locals = {
             user: {
@@ -26,11 +27,6 @@ export class InitialCacheMiddleware implements NestMiddleware {
                 name_empresa: "Yonatan Vigilio",
             } as any,
         };
-
-        console.log(
-            { user: req.locals.user, empresa: req.locals.empresa },
-            "InitialCacheMiddleware"
-        );
 
         next();
     }
