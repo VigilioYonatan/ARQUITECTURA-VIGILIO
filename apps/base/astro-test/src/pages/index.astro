@@ -1,23 +1,18 @@
 ---
-import Welcome from "@components/pages/Welcome.astro";
-import Layout from "@components/pages/Layout.astro";
-import {PUBLIC_APP_NAME} from 'astro:env/client';
 import HelloWorld from "@components/hello-world";
+import Layout from "./_components/layout.astro";
 // const response = await fetch("/api/users");
 // const result = await response.json();
 // console.log(result);
 // const empresaStore = useEmpresaStore(Astro.locals);
 // console.log({empresaStore});
 const empresa =Astro.locals.props;
-console.log(`${PUBLIC_APP_NAME}a`);
 
 console.log(Astro.locals);
-
+// console.log({a:import.meta.env});
 ---
 
 <Layout>
     <HelloWorld client:only="preact" />
-    <h1 class="text-3xl font-bold underline">s23 xdx2</h1>
-    <Welcome />
-    {PUBLIC_APP_NAME}
+    <h1>hossl2</h1>
 </Layout>

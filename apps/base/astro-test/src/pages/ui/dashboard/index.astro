@@ -1,0 +1,19 @@
+---
+import Layout from "../../_components/layout.astro";
+import DemoTabs from "./_components/demo-tabs";
+---
+
+<Layout>
+    <div class="p-6 max-w-7xl mx-auto space-y-8">
+        <div>
+            <h1 class="text-3xl font-bold mb-2">UI Dashboard</h1>
+            <p class="text-muted-foreground">
+                Documentación y demostración de los componentes UI disponibles.
+            </p>
+        </div>
+
+        <div class="bg-card rounded-xl border p-6">
+            <DemoTabs client:only="preact" />
+        </div>
+    </div>
+</Layout>

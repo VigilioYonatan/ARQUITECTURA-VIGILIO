@@ -16,7 +16,7 @@ export default defineConfig({
     integrations: [preact({ compat: true })],
     env: {
         schema: {
-            PUBLIC_APP_NAME: envField.string({
+            PUBLIC_NAME_APP: envField.string({
                 context: "client",
                 access: "public",
             }),
@@ -36,11 +36,11 @@ export default defineConfig({
                 context: "client",
                 access: "public",
             }),
-            PUBLIC_PLUBIC_VAPID_EMAIL: envField.string({
+            PUBLIC_VAPID_EMAIL: envField.string({
                 context: "client",
                 access: "public",
             }),
-            PUBLIC_PRIVATE_VAPID_KEY: envField.string({
+            PUBLIC_VAPID_KEY: envField.string({
                 context: "client",
                 access: "public",
             }),

@@ -30,6 +30,10 @@ pnpm run db:seed
 # 5. Desarrollo
 pnpm serve    # Backend :3000
 pnpm dev      # Frontend :4321
+
+# 6. Configurar pnpm
+pnpm config set store-dir /pnpm/store/v10
+pnpm add library
 ```
 
 ## 📚 Documentación

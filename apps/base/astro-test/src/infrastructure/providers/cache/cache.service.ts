@@ -1,8 +1,7 @@
 import { cacheTimes } from "@infrastructure/libs/server/helpers";
 import { DRIZZLE } from "@infrastructure/providers/database/database.module";
-import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { CACHE_MANAGER, Cache } from "@nestjs/cache-manager";
 import { Inject, Injectable } from "@nestjs/common";
-import type { Cache } from "cache-manager";
 import { eq, isNull, or, sql } from "drizzle-orm"; // Operadores de Drizzle
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type { PgTableWithColumns } from "drizzle-orm/pg-core";

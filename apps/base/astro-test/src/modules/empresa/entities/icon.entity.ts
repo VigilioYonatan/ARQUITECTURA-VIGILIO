@@ -1,5 +1,3 @@
-// ../entities/icon.schema.ts
-
 import type { Entity } from "@infrastructure/types/server";
 import type { FilesSchema } from "@modules/uploads/schemas/upload.schema";
 import { type InferSelectModel } from "drizzle-orm";

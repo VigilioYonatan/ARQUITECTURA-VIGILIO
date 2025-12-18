@@ -6,8 +6,10 @@ import { z } from "zod";
  */
 export const clientEnvironmentsSchema = z.object({
     PUBLIC_NAME_APP: z.string().min(1).default("MyApp"),
-    PUBLIC_ENV: z.enum(["production", "development"]).default("development"),
-    PUBLIC_URL: z.string().url(),
+    PUBLIC_ENV: z
+        .enum(["production", "staging", "development"])
+        .default("development"),
+    PUBLIC_URL: z.url(),
     PUBLIC_PORT: z.coerce.number().int().positive(),
     // Push notifications
     PUBLIC_VAPID_KEY: z.string().min(1).optional(),

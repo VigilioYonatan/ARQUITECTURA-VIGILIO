@@ -13,6 +13,8 @@ export const astroProxy = createProxyMiddleware({
 export function astroRender(props: Record<string, unknown> = {}) {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
+            console.log({ locals: req.locals });
+
             req.headers["x-astro-locals"] = JSON.stringify({
                 ...req.locals,
                 props,

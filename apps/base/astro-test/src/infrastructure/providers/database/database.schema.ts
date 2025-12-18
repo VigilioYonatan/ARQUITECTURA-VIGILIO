@@ -1,3 +1,4 @@
+import { addressEntity } from "@modules/empresa/entities/address.entity";
 import { empresaEntity } from "@modules/empresa/entities/empresa.entity";
 import { fileEntity } from "@modules/empresa/entities/file.entity";
 import { iconEntity } from "@modules/empresa/entities/icon.entity";
@@ -7,11 +8,12 @@ import { regionEntity } from "@modules/ubigeo/entities/region.entity";
 import { userEntity } from "@modules/users/entities/user.entity";
 
 export const schema = {
-	user: userEntity,
-	empresa: empresaEntity,
-	icon: iconEntity,
-	file: fileEntity,
-	country: countryEntity,
-	region: regionEntity,
-	city: cityEntity,
+    user: userEntity,
+    address: addressEntity,
+    empresa: empresaEntity,
+    icon: iconEntity,
+    file: fileEntity,
+    country: countryEntity,
+    region: regionEntity,
+    city: cityEntity,
 };

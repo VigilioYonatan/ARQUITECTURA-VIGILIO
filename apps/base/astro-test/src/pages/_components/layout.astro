@@ -1,0 +1,93 @@
+---
+import { ClientRouter } from "astro:transitions";
+import "../_main.ts";
+const color_primary = Astro.locals.empresa.color_primary;
+console.log(
+    {color_primary}
+);
+const locals =Astro.locals;
+---
+
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro Basics</title>
+		<style is:global define:vars={{ color_primary }}>
+            @layer base {
+                 :root {
+                    --background: #ffffff;
+                    --foreground: #0a0a0a;
+                    --card: #ffffff;
+                    --hover: #066484;
+                    --card-foreground: #0a0a0a;
+                    --popover: #ffffff;
+                    --popover-foreground: #0a0a0a;
+                    
+                    /* Usamos la variable definida en define:vars */
+                    --primary:var(--color_primary); 
+                    
+                    --primary-foreground: #ffffff;
+                    --secondary: #f5f5f5;
+                    --secondary-foreground: #0b95ba;
+                    --muted: #f5f5f5;
+                    --muted-foreground: #737373;
+                    --accent: #f5f5f5;
+                    --accent-foreground: #0b95ba;
+                    --destructive: #dc2626;
+                    --destructive-foreground: #fafafa;
+                    --border: #e5e5e5;
+                    --input: #e5e5e5;
+                    --ring: #171717;
+                    --radius: 0.5rem;
+                }
+                .dark {
+                    --background: #0a0a0a;
+                    --hover: #066484;
+                    --foreground: #fafafa;
+                    --card: #0a0a0a;
+                    --card-foreground: #fafafa;
+                    --popover: #0a0a0a;
+                    --popover-foreground: #fafafa;
+                    
+                    /* También aquí */
+                    --primary: var(--color_primary);
+                    
+                    --primary-foreground: #ffffff;
+                    --secondary: #262626;
+                    --secondary-foreground: #0b95ba;
+                    --muted: #262626;
+                    --muted-foreground: #a3a3a3;
+                    --accent: #262626;
+                    --accent-foreground: #0b95ba;
+                    --destructive: #7f1d1d;
+                    --destructive-foreground: #fafafa;
+                    --border: #262626;
+                    --input: #262626;
+                    --ring: #d4d4d4;
+                }
+
+                * {
+                    border-color: var(--border);
+                }
+
+                body {
+                    color: var(--foreground);
+                    font-feature-settings: "rlig" 1, "calt" 1;
+                    background-color: var(--background);
+                }
+            }
+        </style>
+		<script define:vars={{ locals, }}>window.locals = locals</script>
+		<ClientRouter />
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+
+

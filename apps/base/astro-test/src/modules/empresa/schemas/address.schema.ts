@@ -17,8 +17,8 @@ export const addressSchema = z.object({
     cod_local: z.string().trim(),
     city_id: z.number(),
     user_id: z.number(),
-    created_at: z.date(),
-    updated_at: z.date(),
+    created_at: z.date().optional(),
+    updated_at: z.date().optional(),
 });
 export type AddressSchema = z.infer<typeof addressSchema>;
 export type AddressSchemaFromServer = AddressSchema & {

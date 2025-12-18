@@ -1,5 +1,6 @@
 import { z } from "@infrastructure/config/zod-i18n.config";
 import { COLOR_REGEX } from "@infrastructure/libs";
+import { filesSchema } from "@modules/uploads/schemas/upload.schema";
 import type { UserCreated } from "@modules/users";
 
 export const empresaSchema = z.object({
@@ -11,13 +12,15 @@ export const empresaSchema = z.object({
     color_primary: z.string().regex(COLOR_REGEX),
     timezone: z.string().min(3).max(100),
     enabled_automatic_payment: z.boolean(),
+    logo_facturacion: z.array(filesSchema()).nullable(),
+    certificado_digital: z.array(filesSchema()).nullable(),
     enabled_send_sunat: z.boolean(),
     enabled_send_pdf: z.boolean(),
     telefono: z.string().min(9).max(9),
     address_id: z.number(),
     user_id: z.number(),
-    created_at: z.date(),
-    updated_at: z.date(),
+    created_at: z.date().optional(),
+    updated_at: z.date().optional(),
 });
 export type EmpresaSchema = z.infer<typeof empresaSchema>;
 

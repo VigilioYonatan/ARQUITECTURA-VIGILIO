@@ -6,6 +6,8 @@ import { AppCacheModule } from "@infrastructure/providers/cache/cache.module";
 import { DatabaseModule } from "@infrastructure/providers/database/database.module";
 import { AppLoggerModule } from "@infrastructure/providers/logger/logger.module";
 import { AuthModule } from "@modules/auth/auth.module";
+import { EmpresaModule } from "@modules/empresa/modules/empresa.module";
+import { IconModule } from "@modules/empresa/modules/icon.module";
 import { HealthModule } from "@modules/health/health.module";
 import { UbigeoModule } from "@modules/ubigeo/modules/ubigeo.module";
 import { UploadModule } from "@modules/uploads/modules/upload.module";
@@ -14,7 +16,6 @@ import {
     type MiddlewareConsumer,
     Module,
     type NestModule,
-    RequestMethod,
 } from "@nestjs/common";
 import { APP_FILTER } from "@nestjs/core";
 import { ThrottlerModule } from "@nestjs/throttler";
@@ -38,6 +39,8 @@ import { WebModule } from "./modules/web/web.module";
         WebModule,
         AuthModule,
         HealthModule,
+        EmpresaModule,
+        IconModule,
     ],
     providers: [
         { provide: APP_FILTER, useClass: DrizzleExceptionFilter },
@@ -46,8 +49,6 @@ import { WebModule } from "./modules/web/web.module";
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer
-            .apply(InitialCacheMiddleware)
-            .forRoutes({ path: "*", method: RequestMethod.ALL }); // <--- Aplica a TODO
+        consumer.apply(InitialCacheMiddleware).forRoutes("*"); // <--- Aplica a TODO
     }
 }

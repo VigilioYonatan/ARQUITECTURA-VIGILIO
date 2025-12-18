@@ -1,22 +1,19 @@
-import environments from "@infrastructure/config/server/environments.config";
+import { AddressSeeder } from "@modules/empresa/seeders/adress.seeder";
+import { EmpresaSeeder } from "@modules/empresa/seeders/empresa.seeder";
 import { UbigeoSeeder } from "@modules/ubigeo/seeder/ubigeo.seeder";
+import { UserSeeder } from "@modules/users/seeders/user.seeder";
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
-import { DatabaseModule } from "../database.module";
+import { AppModule } from "@src/app.module";
 import { SeederService } from "./seeder.service";
 
 @Module({
-    imports: [
-        // Importamos ConfigModule para que DatabaseModule funcione
-        ConfigModule.forRoot({
-            isGlobal: true,
-            load: [environments],
-            envFilePath: [".env"],
-            cache: true, // Mejora performance leyendo process.env una sola vez
-            expandVariables: true,
-        }),
-        DatabaseModule,
+    imports: [AppModule],
+    providers: [
+        SeederService,
+        UbigeoSeeder,
+        EmpresaSeeder,
+        UserSeeder,
+        AddressSeeder,
     ],
-    providers: [SeederService, UbigeoSeeder],
 })
 export class SeederModule {}

@@ -56,10 +56,7 @@ export class RustFSService {
         // 1. CLIENTE INTERNO (Docker -> RustFS)
         this.internalClient = new S3Client({
             region,
-            endpoint: this.configService.get(
-                "RUSTFS_INTERNAL_ENDPOINT",
-                "http://minio:9000"
-            ), // "http://rustFS:9000"
+            endpoint: this.configService.getOrThrow("RUSTFS_INTERNAL_ENDPOINT"), // "http://rustFS:9000"
             credentials,
             forcePathStyle: true, // CRÍTICO PARA RUSTFS
         });
@@ -67,10 +64,7 @@ export class RustFSService {
         // 2. CLIENTE FIRMANTE (Navegador -> RustFS)
         this.signerClient = new S3Client({
             region,
-            endpoint: this.configService.get(
-                "RUSTFS_PUBLIC_ENDPOINT",
-                "http://localhost:9000"
-            ), // "http://localhost:9000"
+            endpoint: this.configService.getOrThrow("RUSTFS_PUBLIC_ENDPOINT"), // "http://localhost:9000"
             credentials,
             forcePathStyle: true,
         });
@@ -116,10 +110,9 @@ export class RustFSService {
             return {
                 key,
                 // Construimos la URL pública manualmente o devolvemos solo la key
-                url: `${this.configService.get(
-                    "RUSTFS_PUBLIC_ENDPOINT",
-                    "http://localhost:9000"
-                )}/${this.bucket}/${key}`,
+                url: `${this.configService.get("RUSTFS_PUBLIC_ENDPOINT")}/${
+                    this.bucket
+                }/${key}`,
             };
         } catch (error) {
             this.logger.error(`Error uploading file ${key}`, error);
@@ -167,7 +160,7 @@ export class RustFSService {
 
             this.logger.log(`URL generada: ${uploadUrl}`);
             return { uploadUrl, key };
-        } catch (error) {
+        } catch (_error) {
             throw new InternalServerErrorException("Error generando URL");
         }
     }

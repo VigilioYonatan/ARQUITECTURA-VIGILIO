@@ -1,5 +1,5 @@
 import type { PaginatorResult } from "@infrastructure/libs/server/helpers";
-import type { RustFSService } from "@infrastructure/providers/storage/rustfs.service";
+import { RustFSService } from "@infrastructure/providers/storage/rustfs.service";
 import type { UserAuth } from "@modules/users/schemas/user.schema";
 import { CACHE_MANAGER, Cache } from "@nestjs/cache-manager";
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
